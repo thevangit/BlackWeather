@@ -6,16 +6,16 @@ public class County extends LitePalSupport {
 
     private int id;
 
-    private int mCountyCode;
+    private int countyCode;
 
-    private String mCountyName;
+    private String countyName;
 
     /**
      * 所属城市的id
      */
-    private int mCityId;
+    private int cityId;
 
-    private String mWeatherId;
+    private String weatherId;
 
     public int getId() {
         return id;
@@ -26,34 +26,34 @@ public class County extends LitePalSupport {
     }
 
     public int getCountyCode() {
-        return mCountyCode;
+        return countyCode;
     }
 
     public void setCountyCode(int countyCode) {
-        mCountyCode = countyCode;
+        countyCode = countyCode;
     }
 
     public String getCountyName() {
-        return mCountyName;
+        return countyName;
     }
 
     public void setCountyName(String countyName) {
-        mCountyName = countyName;
+        countyName = countyName;
     }
 
     public int getCityId() {
-        return mCityId;
+        return cityId;
     }
 
     public void setCityId(int cityId) {
-        mCityId = cityId;
+        cityId = cityId;
     }
 
     public String getWeatherId() {
-        return mWeatherId;
+        return weatherId;
     }
 
     public void setWeatherId(String weatherId) {
-        mWeatherId = weatherId;
+        weatherId = weatherId;
     }
 }

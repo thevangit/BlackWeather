@@ -13,7 +13,7 @@ public class City extends LitePalSupport {
     /**
      * 所属省份的id
      */
-    private int mProvinceId;
+    private int provinceId;
 
     public int getId() {
         return id;
@@ -40,10 +40,10 @@ public class City extends LitePalSupport {
     }
 
     public int getProvinceId() {
-        return mProvinceId;
+        return provinceId;
     }
 
     public void setProvinceId(int provinceId) {
-        mProvinceId = provinceId;
+        this.provinceId = provinceId;
     }
 }
