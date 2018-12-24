@@ -1,6 +1,7 @@
 package com.blackweather.android.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.blackweather.android.db.City;
 import com.blackweather.android.db.County;
@@ -40,6 +41,7 @@ public class Utility {
      * 解析和处理服务器返回的市级数据
      */
     public static boolean handleCityResponse(String response, int provinceId) {
+        Log.i("MainActivity", "handleCityResponse: 执行");
         if (!TextUtils.isEmpty(response)) {
             try {
                 JSONArray allCities = new JSONArray(response);
@@ -63,14 +65,16 @@ public class Utility {
      * 解析和处理服务器返回的县级数据
      */
     public static boolean handleCountyResponse(String response, int cityId) {
+        Log.i("MainActivity", "handleCountyResponse: 执行");
         if (!TextUtils.isEmpty(response)) {
             try {
-                JSONArray counties = new JSONArray(response);
-                for (int i = 0; i < counties.length(); i++) {
-                    JSONObject countyObject = counties.getJSONObject(i);
+                JSONArray allCounties = new JSONArray(response);
+                for (int i = 0; i < allCounties.length(); i++) {
+                    JSONObject countyObject = allCounties.getJSONObject(i);
                     County county = new County();
                     county.setCountyName(countyObject.getString("name"));
                     county.setCountyCode(countyObject.getInt("id"));
+                    county.setWeatherId(countyObject.getString("weather_id"));
                     county.setCityId(cityId);
                     county.save();
                 }

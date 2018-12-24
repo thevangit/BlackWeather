@@ -6,9 +6,9 @@ public class Province extends LitePalSupport {
 
     private int id;
 
-    private int mProvinceCode;
+    private int provinceCode;
 
-    private String mProvinceName;
+    private String provinceName;
 
     public int getId() {
         return id;
@@ -19,18 +19,18 @@ public class Province extends LitePalSupport {
     }
 
     public int getProvinceCode() {
-        return mProvinceCode;
+        return provinceCode;
     }
 
     public void setProvinceCode(int provinceCode) {
-        mProvinceCode = provinceCode;
+        this.provinceCode = provinceCode;
     }
 
     public String getProvinceName() {
-        return mProvinceName;
+        return provinceName;
     }
 
     public void setProvinceName(String provinceName) {
-        mProvinceName = provinceName;
+        this.provinceName = provinceName;
     }
 }

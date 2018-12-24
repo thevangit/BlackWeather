@@ -6,9 +6,9 @@ public class City extends LitePalSupport {
 
     private int id;
 
-    private int mCityCode;
+    private int cityCode;
 
-    private String mCityName;
+    private String cityName;
 
     /**
      * 所属省份的id
@@ -24,19 +24,19 @@ public class City extends LitePalSupport {
     }
 
     public int getCityCode() {
-        return mCityCode;
+        return cityCode;
     }
 
     public void setCityCode(int cityCode) {
-        mCityCode = cityCode;
+        this.cityCode = cityCode;
     }
 
     public String getCityName() {
-        return mCityName;
+        return cityName;
     }
 
     public void setCityName(String cityName) {
-        mCityName = cityName;
+        this.cityName = cityName;
     }
 
     public int getProvinceId() {

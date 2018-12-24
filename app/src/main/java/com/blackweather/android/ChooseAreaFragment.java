@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,6 +96,7 @@ public class ChooseAreaFragment extends Fragment {
         mTitleText = view.findViewById(R.id.title_text);
         mBackButton = view.findViewById(R.id.back_button);
         mListView = view.findViewById(R.id.list_view);
+//        mDataList.add("1");
         mAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_expandable_list_item_1,
                 mDataList);
         mListView.setAdapter(mAdapter);
@@ -133,6 +135,7 @@ public class ChooseAreaFragment extends Fragment {
      * 查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询
      */
     private void queryProvinces() {
+        Log.i("MainActivity", "queryProvinces: 执行" );
         // TODO(2) 改变string resource的hard-code
         mTitleText.setText("中国");
         mBackButton.setVisibility(View.GONE);
@@ -144,9 +147,7 @@ public class ChooseAreaFragment extends Fragment {
             }
             // 通知adapter数据data改变了
             mAdapter.notifyDataSetChanged();
-
             mListView.setSelection(0);
-
             // 最开始的层级为省级
             mCurrentLevel = LEVEL_PROVINCE;
         } else {
@@ -159,6 +160,7 @@ public class ChooseAreaFragment extends Fragment {
      * 查询选中的省内所有的市，优先从数据库查询，如果没有查询到再去服务器上查询
      */
     private void queryCities(){
+        Log.i("MainActivity", "queryCities: 执行" );
         mTitleText.setText(mSelectedProvince.getProvinceName());
         mBackButton.setVisibility(View.VISIBLE);
         mCityList = LitePal.where("provinceId = ?", String.valueOf(mSelectedProvince
@@ -173,7 +175,7 @@ public class ChooseAreaFragment extends Fragment {
             mCurrentLevel = LEVEL_CITY;
         } else {
             int provinceCode = mSelectedProvince.getProvinceCode();
-            String address = CITY_ADDRESS + provinceCode;
+            String address = CITY_ADDRESS + "/" + provinceCode;
             queryFormServer(address, "city");
         }
     }
@@ -182,8 +184,10 @@ public class ChooseAreaFragment extends Fragment {
      * 查询选中市中所有的县，优先从数据库查询，如果没有查询到再去服务器上查询
      */
     private void queryCounties() {
+        Log.i("MainActivity", "queryCounties: 执行" );
         mTitleText.setText(mSelectedCity.getCityName());
-        mCountyList = LitePal.where("cityid = ?", String.valueOf(mSelectedCity
+        mBackButton.setVisibility(View.VISIBLE);
+        mCountyList = LitePal.where("cityId = ?", String.valueOf(mSelectedCity
                 .getId())).find(County.class);
         if (mCountyList.size() > 0) {
             mDataList.clear();
@@ -195,8 +199,8 @@ public class ChooseAreaFragment extends Fragment {
             mCurrentLevel = LEVEL_COUNTY;
         } else {
             int provinceCode = mSelectedProvince.getProvinceCode();
-            int citycode = mSelectedCity.getCityCode();
-            String address = CITY_ADDRESS + provinceCode + citycode;
+            int cityCode = mSelectedCity.getCityCode();
+            String address = CITY_ADDRESS + "/" + provinceCode + "/" + cityCode;
             queryFormServer(address, "county");
         }
     }
@@ -205,6 +209,7 @@ public class ChooseAreaFragment extends Fragment {
      * 根据传入的地址和类型从服务器上查询省市县数据, type是final的是应为匿名类需要访问该变量
      */
     private void queryFormServer(String address, final String type) {
+        Log.i("MainActivity", "queryFormServer:执行 ");
         showProgressDialog();
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
@@ -228,7 +233,7 @@ public class ChooseAreaFragment extends Fragment {
                     result = Utility.handleProvinceResponse(responseText);
                 } else if ("city".equals(type)) {
                     result = Utility.handleCityResponse(responseText,
-                            mSelectedProvince.getProvinceCode());
+                            mSelectedProvince.getId());
                 } else if ("county".equals(type)) {
                     result = Utility.handleCountyResponse(responseText,
                             mSelectedCity.getId());
@@ -256,6 +261,7 @@ public class ChooseAreaFragment extends Fragment {
      * Show ProgressDialog
      */
     private void showProgressDialog() {
+        Log.i("MainActivity", "showProgressDialog: 执行");
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getActivity());
             // TODO hard-code warning
@@ -273,6 +279,7 @@ public class ChooseAreaFragment extends Fragment {
      * close ProgressDialog
      */
     private void closeProgressDialog() {
+        Log.i("MainActivity", "closeProgressDialog: 执行");
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
