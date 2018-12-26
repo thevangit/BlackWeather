@@ -2,12 +2,15 @@ package com.blackweather.android;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -27,7 +30,11 @@ import okhttp3.Response;
 
 public class WeatherActivity extends AppCompatActivity {
 
-    private SwipeRefreshLayout mSwipeRefresh;
+    public DrawerLayout mDrawerLayout;
+
+    private Button mNavButton;
+
+    public SwipeRefreshLayout mSwipeRefresh;
 
     private String mWeatherId;
 
@@ -59,6 +66,8 @@ public class WeatherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_weather);
 
         // 初始化控件
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mNavButton = findViewById(R.id.nav_button);
         mSwipeRefresh = findViewById(R.id.swipe_refresh);
         // 设置刷新时动画的颜色
         mSwipeRefresh.setColorSchemeResources(R.color.colorPrimary);
@@ -73,6 +82,12 @@ public class WeatherActivity extends AppCompatActivity {
         mComfortText = findViewById(R.id.comfort_text);
         mCarWashText =findViewById(R.id.car_wash_text);
         mSportText = findViewById(R.id.sport_text);
+        mNavButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
         if (weatherString != null) {
@@ -185,9 +200,6 @@ public class WeatherActivity extends AppCompatActivity {
                 sport = "运动指数：" + life.subtitle + "\n" + life.text;
             }
         }
-//        String comfort = "舒适度：" + weather.suggestion.Comfort.info;
-//        String carWash = "洗车指数：" + weather.suggestion.carWash.info;
-//        String sport = "运动指数：" + weather.suggestion.sport.info;
         if (comfort != null) {
             mComfortText.setText(comfort);
         }
