@@ -4,31 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WeatherActivity"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    tools:context=".WeatherActivity">
 
-    <ScrollView
-        android:id="@+id/weather_layout"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="vertical"
+        <ScrollView
+            android:id="@+id/weather_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <include layout="@layout/title"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <include layout="@layout/now"/>
+                <include layout="@layout/title" />
 
-            <include layout="@layout/forecast"/>
+                <include layout="@layout/now" />
 
-            <include layout="@layout/aqi"/>
+                <include layout="@layout/forecast" />
 
-            <include layout="@layout/suggestion"/>
+                <include layout="@layout/aqi" />
 
-        </LinearLayout>
+                <include layout="@layout/suggestion" />
 
-    </ScrollView>
+            </LinearLayout>
+
+        </ScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>
