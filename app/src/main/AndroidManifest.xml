@@ -24,7 +24,16 @@
         <service
             android:name=".service.AutoUpdateService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
+
+        <service android:name=".sync.BlackWeatherSyncIntentService"
+            android:exported="false"
+            android:enabled="true"/>
+
+        <provider
+            android:authorities="com.blackweather.android"
+            android:name=".data.BlackWeatherProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

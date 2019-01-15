@@ -12,36 +12,26 @@ import java.net.URL;
 
 /**
  * Author: theVan
- * 这个类的工具方法的作用是连接Server
+ * 1.这个类的工具方法的作用是连接Server
  */
 public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    /* 使用了心和天气的免费API接口，网址:www.seniverse.com */
+    /* 使用了和风天气的免费API接口，网址:www.heweather.com */
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    private static final String BASE_WEATHER_URL = "https://api.seniverse.com/v3/";
+    private static final String BASE_WEATHER_URL = "https://free-api.heweather.net/s6/";
     // 预留部分：实时天气预报URL的层级部分
     private static final String REAL_TIME_BASE_URL = BASE_WEATHER_URL + "weather/now.json";
     // 逐日天气预报URL的层级部分
-    private static final String DAILY_BASE_URL = BASE_WEATHER_URL + "weather/daily.json";
+    private static final String DAILY_BASE_URL = BASE_WEATHER_URL + "weather/forecast.json";
     // query部分
     private static final String KEY = "key";
-    private static final String KEY_PARAM = "baoa5eqct9rizbcg";
+    private static final String KEY_PARAM = "2c356d0ee50b4f15b1894cbf05ad8f66";
     private static final String LOCATION = "location";
-    private static final String LANGUAGE = "language";
-    private static final String LANGUAGE_PARAM_SIMPLE_CHINESE = "zh-Hans";
     private static final String UNIT = "unit";
-    private static final String UNIT_PARAM_METRIC = "c";
-    private static final String START_DAY = "start";
-    private static final String START_DAY_PARAM = "0";
-    private static final String NUM_DAY = "days";
-    private static final String NUM_DAY_PARAM = "5";
-
-    /*
-        Project_step1: build url
-     */
+    private static final String UNIT_PARAM_IMPERIAL = "i";
 
     /**
      * TODO(1)build url:方法的作用（职责）是以指定的经度和纬度为基础构建连接服务器的url
@@ -57,10 +47,6 @@ public final class NetworkUtils {
         Uri uri = Uri.parse(DAILY_BASE_URL).buildUpon()
                 .appendQueryParameter(KEY, KEY_PARAM)
                 .appendQueryParameter(LOCATION, longtitude + ":" + latiude)
-                .appendQueryParameter(LANGUAGE, LANGUAGE_PARAM_SIMPLE_CHINESE)
-                .appendQueryParameter(UNIT, UNIT_PARAM_METRIC) // 单位为公制
-                .appendQueryParameter(START_DAY, START_DAY_PARAM)
-                .appendQueryParameter(NUM_DAY, NUM_DAY_PARAM)
                 .build();
         // step2：以step1中构建的uri为基础，构建逐日天气预报的url,记住throws exception
         URL url = new URL(uri.toString());
@@ -78,10 +64,6 @@ public final class NetworkUtils {
         Uri uri = Uri.parse(DAILY_BASE_URL).buildUpon()
                 .appendQueryParameter(KEY, KEY_PARAM)
                 .appendQueryParameter(LOCATION, cityName)
-                .appendQueryParameter(LANGUAGE, LANGUAGE_PARAM_SIMPLE_CHINESE)
-                .appendQueryParameter(UNIT, UNIT_PARAM_METRIC)
-                .appendQueryParameter(START_DAY, START_DAY_PARAM)
-                .appendQueryParameter(NUM_DAY, NUM_DAY_PARAM)
                 .build();
         // step2: build url with uri
         URL url = new URL(uri.toString());
@@ -120,5 +102,8 @@ public final class NetworkUtils {
             }
         }
         return response.toString();
+    }
+
+    public static URL getUrl() {return null;
     }
 }

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">黑人天气</string>
+
+    <!--偏好设置中的单位设置-->
+    <string name="pref_units_key" translatable="false">units</string>
+    <string name="pref_units_metric">metric</string>
+    <string name="pref_units_imperial">imperial</string>
+    <string name="pref_units_metric_label">公制</string>
+    <string name="pref_units_imperial_label">英制</string>
 </resources>
