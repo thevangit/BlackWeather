@@ -2,7 +2,6 @@ package com.blackweather.android;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,14 +17,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blackweather.android.db.City;
-import com.blackweather.android.db.County;
-import com.blackweather.android.db.Province;
-import com.blackweather.android.util.HttpUtil;
-import com.blackweather.android.util.Utility;
+import com.blackweather.android.litePalDatabase.City;
+import com.blackweather.android.litePalDatabase.County;
+import com.blackweather.android.litePalDatabase.Province;
+import com.blackweather.android.utilities.JsonUtils;
+import com.blackweather.android.utilities.NetworkUtils;
 
 import org.litepal.LitePal;
-import org.litepal.crud.LitePalSupport;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +33,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class ChooseAreaFragment extends Fragment {
+public class BlackChooseFragment extends Fragment {
 
     // 使用整型数据来表示当前fragment所显示的列表的层级
     public static final int LEVEL_PROVINCE = 0;
@@ -118,17 +116,16 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 } else if (mCurrentLevel == LEVEL_COUNTY) {
                     String weatherId = mCountyList.get(position).getWeatherId();
-                    if (getActivity() instanceof MainActivity) {
-                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    if (getActivity() instanceof BlackMainActivity) {
+                        Intent intent = new Intent(getActivity(), BlackHomeActivity.class);
                         intent.putExtra("weather_id", weatherId);
                         startActivity(intent);
-                        // 注意释放资源
                         getActivity().finish();
-                    } else if (getActivity() instanceof WeatherActivity) {
-                        WeatherActivity activity = (WeatherActivity) getActivity();
-                        activity.getDrawerLayout().closeDrawers();
-                        activity.getSwipeRefresh().setRefreshing(true);
-                        activity.requestWeather(weatherId);
+                    } else if (getActivity() instanceof BlackHomeActivity) {
+                        BlackHomeActivity activity = (BlackHomeActivity) getActivity();
+//                        activity.getDrawerLayout().closeDrawers();
+//                        activity.getSwipeRefresh().setRefreshing(true);
+//                        activity.requestWeather(weatherId);
                     }
                 }
             }
@@ -226,7 +223,7 @@ public class ChooseAreaFragment extends Fragment {
     private void queryFormServer(String address, final String type) {
         Log.i("MainActivity", "queryFormServer:执行 ");
         showProgressDialog();
-        HttpUtil.sendOkHttpRequest(address, new Callback() {
+        NetworkUtils.sendOkHttpRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 // 通过runOnUiThread()方法回到主线程处理逻辑
@@ -245,12 +242,12 @@ public class ChooseAreaFragment extends Fragment {
                 String responseText = response.body().string();
                 boolean result = false;
                 if ("province".equals(type)) {
-                    result = Utility.handleProvinceResponse(responseText);
+                    result = JsonUtils.handleProvinceResponse(responseText);
                 } else if ("city".equals(type)) {
-                    result = Utility.handleCityResponse(responseText,
+                    result = JsonUtils.handleCityResponse(responseText,
                             mSelectedProvince.getId());
                 } else if ("county".equals(type)) {
-                    result = Utility.handleCountyResponse(responseText,
+                    result = JsonUtils.handleCountyResponse(responseText,
                             mSelectedCity.getId());
                 }
                 if (result) {

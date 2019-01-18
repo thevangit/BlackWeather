@@ -10,8 +10,8 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 
 import com.blackweather.android.gson.Weather;
-import com.blackweather.android.util.HttpUtil;
-import com.blackweather.android.util.Utility;
+import com.blackweather.android.utilities.JsonUtils;
+import com.blackweather.android.utilities.NetworkUtils;
 
 import java.io.IOException;
 
@@ -50,12 +50,12 @@ public class AutoUpdateService extends Service {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
         if (weatherString != null) {
-            Weather weather = Utility.handleWeatherResponse(weatherString);
+            Weather weather = JsonUtils.handleWeatherResponse(weatherString);
             String weatherId = weather.basic.weatherId;
 
             String weatherUrl = "https://api.heweather.net/s6/weather?location=" +
                     weatherId + "&key=5f1e588531514d65a6a08569774a17ec";
-            HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
+            NetworkUtils.sendOkHttpRequest(weatherUrl, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     e.printStackTrace();
@@ -64,7 +64,7 @@ public class AutoUpdateService extends Service {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String reponseText = response.body().string();
-                    Weather weather = Utility.handleWeatherResponse(reponseText);
+                    Weather weather = JsonUtils.handleWeatherResponse(reponseText);
                     if (weather != null && "ok".equals(weather.status)) {
                         SharedPreferences.Editor editor = PreferenceManager
                                 .getDefaultSharedPreferences(AutoUpdateService.this)

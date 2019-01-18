@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.blackweather.android.MainActivity">
+    tools:context="com.blackweather.android.BlackMainActivity">
 
     <fragment
         android:id="@+id/choose_area_fragment"
-        android:name="com.blackweather.android.ChooseAreaFragment"
+        android:name="com.blackweather.android.BlackChooseFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

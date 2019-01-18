@@ -1,0 +1,25 @@
+package com.blackweather.android;
+
+import android.app.Application;
+import android.content.Context;
+
+import org.litepal.LitePal;
+
+/**
+ * 自定义Application类，方便获取全局context和初始化LitePal
+ */
+public class BlackApplication extends Application {
+
+    private static Context context;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        context = getApplicationContext();
+        LitePal.initialize(context);
+    }
+
+    public static Context getContext () {
+        return context;
+    }
+}

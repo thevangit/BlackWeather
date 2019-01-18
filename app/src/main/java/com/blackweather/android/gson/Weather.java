@@ -12,13 +12,8 @@ public class Weather {
 
     public Update update;
 
-    public Now now;
-
     // 使用Gson映射数组的方法
     @SerializedName("daily_forecast")
     public List<Forecast> forecastList;
-
-    @SerializedName("lifestyle")
-    public List<LifeStyle> lifestyleList;
 
 }

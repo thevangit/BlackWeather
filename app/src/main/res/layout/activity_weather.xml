@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context=".WeatherActivity">
+    tools:context=".BlackHomeActivity">
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
@@ -51,7 +51,7 @@
 
         <fragment
             android:id="@+id/choose_area_fragment"
-            android:name="com.blackweather.android.ChooseAreaFragment"
+            android:name="com.blackweather.android.BlackChooseFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"/>

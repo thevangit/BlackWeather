@@ -5,35 +5,27 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="org.litepal.LitePalApplication"
+        android:name="com.blackweather.android.BlackApplication"
         android:allowBackup="true"
         android:icon="@mipmap/bw_3"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".BlackMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WeatherActivity" />
+        <activity android:name=".BlackHomeActivity" />
 
         <service
             android:name=".service.AutoUpdateService"
             android:enabled="true"
             android:exported="true"/>
 
-        <service android:name=".sync.BlackWeatherSyncIntentService"
-            android:exported="false"
-            android:enabled="true"/>
-
-        <provider
-            android:authorities="com.blackweather.android"
-            android:name=".data.BlackWeatherProvider"
-            android:exported="false"/>
     </application>
 
 </manifest>

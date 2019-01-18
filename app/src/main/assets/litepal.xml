@@ -6,9 +6,9 @@
     <version value ="1" />
 
     <list>
-        <mapping class="com.blackweather.android.db.Province" />
-        <mapping class="com.blackweather.android.db.City" />
-        <mapping class="com.blackweather.android.db.County" />
+        <mapping class="com.blackweather.android.litePalDatabase.Province" />
+        <mapping class="com.blackweather.android.litePalDatabase.City" />
+        <mapping class="com.blackweather.android.litePalDatabase.County" />
     </list>
 
 </litepal>
