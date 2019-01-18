@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_1">
+    android:background="@drawable/bg_1"
+    android:orientation="vertical">
+
+    <include layout="@layout/title"/>
 
     <!--android:clipToPadding:是否裁剪子view-->
     <android.support.v7.widget.RecyclerView
@@ -18,5 +21,5 @@
         android:layout_gravity="center"
         android:visibility="invisible" />
 
-</FrameLayout>
+</LinearLayout>
 

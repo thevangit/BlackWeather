@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blackweather.android.gson.Weather;
@@ -29,6 +30,7 @@ public class BlackHomeActivity extends AppCompatActivity {
     private RecyclerView mHomeRecyclerView;
     private BlackAdapter mAdapter;
     private String mWeatherId;
+    private TextView mLocationTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class BlackHomeActivity extends AppCompatActivity {
 
         // 初始化
 //        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mLocationTextView = findViewById(R.id.title_location);
         mHomeRecyclerView = findViewById(R.id.home_recycler_view);
         mAdapter = new BlackAdapter();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -55,6 +58,7 @@ public class BlackHomeActivity extends AppCompatActivity {
         if (weatherStr != null) {
             Weather weather = JsonUtils.handleWeatherResponse(weatherStr);
             mAdapter.setData(weather);
+            mLocationTextView.setText(weather.basic.location);
         }else {
             try {
                 mWeatherId = getIntent().getStringExtra("weather_id");

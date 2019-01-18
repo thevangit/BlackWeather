@@ -2,16 +2,19 @@ package com.blackweather.android;
 
 import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blackweather.android.customView.BarView;
 import com.blackweather.android.customView.CircleView;
 import com.blackweather.android.customView.DataView;
 import com.blackweather.android.gson.Forecast;
 import com.blackweather.android.gson.Weather;
+import com.blackweather.android.utilities.BlackUtil;
 
 /**
  * 定义RecyclerView的adapter
@@ -21,6 +24,8 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
     // 不同的item view的常量
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE = 1;
+    private static final float PERCENTAGE = 100;
+    private static final float RATE = 15;
 
     private Weather mWeather;
 
@@ -47,11 +52,17 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
         private TextView maxTempTextView;
         private TextView minTempTextView;
         private ImageView moreImageView;
+        private View lineView;
         // today的view
         private CircleView humidityCircleView;
         private DataView humidityDataView;
         private CircleView precipCircleView;
         private DataView precipDataView;
+        private BarView windBarView;
+        private DataView windDataView;
+        private BarView uvBarView;
+        private DataView uvDataView;
+
 
         public BlackHolder(View itemView) {
             super(itemView);
@@ -65,6 +76,11 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
             humidityDataView = itemView.findViewById(R.id.humidity_data);
             precipCircleView = itemView.findViewById(R.id.precip_circle);
             precipDataView = itemView.findViewById(R.id.precip_data);
+            windBarView = itemView.findViewById(R.id.wind_barView);
+            windDataView = itemView.findViewById(R.id.wind_data);
+            uvBarView = itemView.findViewById(R.id.uv_bar);
+            uvDataView = itemView.findViewById(R.id.uv_data);
+//            lineView = itemView.findViewById(R.id.line_view);
         }
     }
 
@@ -92,6 +108,10 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
         int viewType = getItemViewType(position);
         switch (viewType) {
             case VIEW_TYPE_TODAY:
+                String windScaleStr = forecast.windScale;
+                String windScale = windScaleStr.split("-")[1];
+                float windScaleF = Float.parseFloat(windScale);
+
                 blackHolder.dateTextView.setText(forecast.date);
                 blackHolder.weatherDescriptionTextView.setText(forecast.textDay);
                 blackHolder.maxTempTextView.setText(forecast.tempMax + "\u00b0");
@@ -104,12 +124,20 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
                         100);
                 blackHolder.precipDataView.setData(Float.parseFloat(forecast.precip),
                         "%");
+                blackHolder.iconImageView.setImageResource(BlackUtil.
+                        getIconResInDay(Integer.parseInt(forecast.codeDay)));
+                blackHolder.windBarView.setData(windScaleF, 15);
+                blackHolder.windDataView.setData(windScaleF, null);
+                blackHolder.uvBarView.setData(Float.parseFloat(forecast.uv), 15);
+                blackHolder.uvDataView.setData(Float.parseFloat(forecast.uv), null);
                 break;
             case VIEW_TYPE_FUTURE:
                 blackHolder.dateTextView.setText(forecast.date);
                 blackHolder.weatherDescriptionTextView.setText(forecast.textDay);
                 blackHolder.maxTempTextView.setText(forecast.tempMax + "\u00b0");
                 blackHolder.minTempTextView.setText(forecast.tempMin + "\u00b0");
+                blackHolder.iconImageView.setImageResource(BlackUtil.
+                        getIconResInDay(Integer.parseInt(forecast.codeDay)));
                 break;
             default:
                 throw new IllegalArgumentException();

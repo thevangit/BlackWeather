@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
+    android:background="@color/trans_parent_black"
     android:paddingLeft="@dimen/list_item_padding_horizontal"
-    android:paddingTop="@dimen/list_item_padding_vertical"
+    android:paddingTop="@dimen/list_item_margin_large"
     android:paddingRight="@dimen/list_item_padding_horizontal"
-    android:paddingBottom="@dimen/list_item_padding_vertical">
+    android:paddingBottom="@dimen/list_item_margin_large">
 
     <ImageView
         android:id="@+id/weather_icon"
@@ -16,7 +17,6 @@
         android:layout_height="40dp"
         android:layout_marginStart="@dimen/list_item_margin_small"
         android:layout_marginTop="@dimen/list_item_margin_small"
-        android:src="@mipmap/bw_3"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
@@ -96,6 +96,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         app:srcCompat="@android:drawable/ic_media_play" />
-
 
 </android.support.constraint.ConstraintLayout>

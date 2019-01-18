@@ -8,4 +8,7 @@
 
     <color name="primary_text">#EEFFFFFF</color>
     <color name="secondary_text">@android:color/darker_gray</color>
+    <color name="third_text">#414141</color>
+
+    <color name="trans_parent_black">#8000</color>
 </resources>

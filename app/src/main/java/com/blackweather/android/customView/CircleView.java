@@ -11,7 +11,7 @@ import android.view.animation.BounceInterpolator;
 
 import com.blackweather.android.BlackApplication;
 import com.blackweather.android.R;
-import com.blackweather.android.utilities.DensityUtil;
+import com.blackweather.android.utilities.BlackUtil;
 
 public class CircleView extends View {
 
@@ -84,7 +84,7 @@ public class CircleView extends View {
     }
 
     private void setStrokeWidth(int dp) {
-        mStrokeWidth = DensityUtil.dip2px(BlackApplication.getContext(),dp);
+        mStrokeWidth = BlackUtil.dip2px(BlackApplication.getContext(),dp);
     }
 
     private void setPaintColor(int colorRes) {

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
+    android:background="@color/trans_parent_black"
     android:paddingTop="@dimen/list_item_margin_large"
     android:paddingBottom="@dimen/list_item_margin_large">
 
@@ -13,12 +13,13 @@
         android:id="@+id/weather_icon"
         android:layout_width="@dimen/list_item_image_size_large"
         android:layout_height="@dimen/list_item_image_size_large"
-        android:src="@mipmap/bw_3"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
+        android:layout_marginTop="48dp"
+        android:src="@drawable/art_clouds"
         app:layout_constraintEnd_toStartOf="@+id/guideline_vertical"
+        app:layout_constraintHorizontal_bias="0.395"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@mipmap/bw_3" />
+        tools:src="@drawable/art_light_rain" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline_vertical"
@@ -34,11 +35,12 @@
         android:fontFamily="sans-serif-light"
         android:textColor="@color/primary_text"
         android:textSize="@dimen/list_item_text_size_large"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/weather_description"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintHorizontal_bias="0.388"
         app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/weather_icon"
+        app:layout_constraintVertical_bias="1.0"
         tools:text="19\u00b0" />
 
     <TextView
@@ -54,7 +56,10 @@
         android:textSize="@dimen/list_item_text_size_small_small"
         app:layout_constraintBottom_toTopOf="@+id/weather_icon"
         app:layout_constraintEnd_toStartOf="@+id/guideline_vertical"
+        app:layout_constraintHorizontal_bias="0.482"
         app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         tools:text="今日，1-16" />
 
     <TextView
@@ -83,26 +88,22 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_item_margin_small"
-        android:fontFamily="serif"
+        style="@style/hint_text_style"
+        android:layout_marginTop="42dp"
         android:text="相对湿度"
-        android:textColor="@color/primary_text"
-        android:textSize="@dimen/list_item_text_size_small_small_small"
-        app:layout_constraintBottom_toTopOf="@+id/humidity_circle"
         app:layout_constraintEnd_toEndOf="@+id/weather_description"
         app:layout_constraintStart_toStartOf="@+id/weather_description"
-        app:layout_constraintTop_toTopOf="@+id/guideline_horizontal" />
+        app:layout_constraintTop_toBottomOf="@+id/weather_description" />
 
     <com.blackweather.android.customView.CircleView
         android:id="@+id/humidity_circle"
         android:layout_width="@dimen/list_item_image_size_large"
         android:layout_height="@dimen/list_item_image_size_large"
         android:padding="@dimen/circle_padding"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/weather_icon"
-        app:layout_constraintStart_toStartOf="@+id/weather_icon"
+        app:layout_constraintBottom_toTopOf="@+id/hint_text_3"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
         app:paintColor="@color/primary_text"
         app:strokeWidth="@dimen/circle_width" />
 
@@ -120,25 +121,21 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="serif"
+        style="@style/hint_text_style"
         android:text="降水概率"
-        android:textColor="@color/primary_text"
-        android:textSize="@dimen/list_item_text_size_small_small_small"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="@+id/high_temperature"
-        app:layout_constraintStart_toStartOf="@+id/high_temperature" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="@+id/low_temperature"
+        app:layout_constraintStart_toStartOf="@+id/low_temperature" />
 
     <com.blackweather.android.customView.CircleView
         android:id="@+id/precip_circle"
         android:layout_width="@dimen/list_item_image_size_large"
         android:layout_height="@dimen/list_item_image_size_large"
         android:padding="@dimen/circle_padding"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/high_temperature"
-        app:layout_constraintStart_toStartOf="@+id/high_temperature"
-        app:layout_constraintTop_toTopOf="@+id/humidity_circle"
+        app:layout_constraintBottom_toBottomOf="@+id/humidity_circle"
+        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
         app:paintColor="@color/primary_text"
         app:strokeWidth="@dimen/circle_width" />
 
@@ -155,21 +152,77 @@
         tools:text="70%" />
 
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline_horizontal"
+    <TextView
+        android:id="@+id/hint_text_3"
+        style="@style/hint_text_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="198dp"
-        android:layout_marginBottom="6dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/humidity_circle"
-        app:layout_constraintGuide_percent="0.6"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread_inside" />
+        android:layout_marginTop="36dp"
+        android:text="风力等级"
+        app:layout_constraintBottom_toTopOf="@+id/wind_barView"
+        app:layout_constraintEnd_toEndOf="@+id/humidity_circle"
+        app:layout_constraintStart_toStartOf="@+id/humidity_circle"
+        app:layout_constraintTop_toBottomOf="@+id/humidity_circle" />
 
-    <android.support.constraint.Group
-        android:id="@+id/group"
+    <com.blackweather.android.customView.BarView
+        android:id="@+id/wind_barView"
+        android:layout_width="96dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:background="@color/third_text"
+        app:color="@color/primary_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/hint_text_3"
+        app:layout_constraintStart_toStartOf="@+id/hint_text_3"
+        app:layout_constraintTop_toBottomOf="@+id/hint_text_3" />
+
+    <TextView
+        android:id="@+id/hint_text_4"
+        style="@style/hint_text_style"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="紫外线强度"
+        app:layout_constraintBaseline_toBaselineOf="@+id/hint_text_3"
+        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintHorizontal_bias="0.312"
+        app:layout_constraintStart_toStartOf="@+id/textView2" />
+
+    <com.blackweather.android.customView.BarView
+        android:id="@+id/uv_bar"
+        android:layout_width="96dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/third_text"
+        app:color="@color/primary_text"
+        app:layout_constraintBottom_toBottomOf="@+id/wind_barView"
+        app:layout_constraintEnd_toEndOf="@+id/hint_text_4"
+        app:layout_constraintStart_toStartOf="@+id/hint_text_4"
+        app:layout_constraintTop_toBottomOf="@+id/hint_text_4" />
+
+    <com.blackweather.android.customView.DataView
+        android:id="@+id/wind_data"
+        style="@style/hint_text_style"
+        app:layout_constraintBottom_toBottomOf="@+id/wind_barView"
+        app:layout_constraintStart_toEndOf="@+id/wind_barView"
+        app:layout_constraintTop_toTopOf="@+id/wind_barView"
+        tools:text="9" />
+
+    <com.blackweather.android.customView.DataView
+        android:id="@+id/uv_data"
+        style="@style/hint_text_style"
+        app:layout_constraintBottom_toBottomOf="@+id/uv_bar"
+        app:layout_constraintStart_toEndOf="@+id/uv_bar"
+        app:layout_constraintTop_toTopOf="@+id/uv_bar"
+        tools:text="8" />
+
+    <ImageView
+        android:id="@+id/more"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="16dp"
+        android:src="@android:drawable/ic_media_play"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

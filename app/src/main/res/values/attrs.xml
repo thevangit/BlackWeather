@@ -5,4 +5,9 @@
         <attr name="strokeWidth" format="dimension|reference" />
     </declare-styleable>
 
+    <declare-styleable name="BarView">
+        <attr name="color" format="color|reference"/>
+        <attr name="width" format="dimension|reference"/>
+    </declare-styleable>
+
 </resources>
