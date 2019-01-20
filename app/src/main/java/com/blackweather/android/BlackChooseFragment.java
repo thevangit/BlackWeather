@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,27 @@ import okhttp3.Response;
 
 public class BlackChooseFragment extends Fragment {
 
+    private int mState;
+    public static final int STATE_PLUS_PAGE = 0;
+    public static final int STATE_REFRESH_PAGE = 1;
+
+    public static BlackChooseFragment newInstance(int stateData) {
+        BlackChooseFragment bhf = new BlackChooseFragment();
+        Bundle args = new Bundle();
+        args.putInt("state", stateData);
+        bhf.setArguments(args);
+        return bhf;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            mState = args.getInt("state");
+        }
+    }
+
     // 使用整型数据来表示当前fragment所显示的列表的层级
     public static final int LEVEL_PROVINCE = 0;
 
@@ -44,7 +66,8 @@ public class BlackChooseFragment extends Fragment {
 
     // TODO(1) 将ProgressDialog更改为ProgressBar
     // 进度对话框，在API26中ProgressDialog被声明不赞成使用，应使用的替代方法是ProgressBar
-    private ProgressDialog mProgressDialog;
+//    private ProgressDialog mProgressDialog;
+    private ProgressBar mProgressBar;
 
     private TextView mTitleText;
 
@@ -103,7 +126,7 @@ public class BlackChooseFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -122,10 +145,38 @@ public class BlackChooseFragment extends Fragment {
                         startActivity(intent);
                         getActivity().finish();
                     } else if (getActivity() instanceof BlackHomeActivity) {
-                        BlackHomeActivity activity = (BlackHomeActivity) getActivity();
+//                        BlackHomeActivity activity = (BlackHomeActivity) getActivity();
 //                        activity.getDrawerLayout().closeDrawers();
 //                        activity.getSwipeRefresh().setRefreshing(true);
 //                        activity.requestWeather(weatherId);
+                        BlackHomeActivity activity = (BlackHomeActivity) getActivity();
+                        Bundle bundle = new Bundle();
+
+                        if (mState == STATE_PLUS_PAGE) {
+                                bundle.putSerializable("add_fragment",
+                                        BlackHomeFragment.newInstance(weatherId));
+                                activity.setPlusBundle(bundle);
+                                activity.getDrawerLayout().closeDrawers();
+
+//                            Intent intent = new Intent(getActivity(), BlackHomeActivity.class);
+//                            intent.putExtra("new_fragment",
+//                                    BlackHomeFragment.newInstance(weatherId));
+//                            BlackHomeActivity activity = (BlackHomeActivity) getActivity();
+//                            activity.getDrawerLayout().closeDrawers();
+//                            getActivity().finish();
+
+
+//                        activity.getSwipeRefresh().setRefreshing(true);
+//                        activity.requestWeather(weatherId);
+                        }else if (mState == STATE_REFRESH_PAGE) {
+//                            Bundle intent = new Intent(getActivity(), BlackHomeActivity.class);
+
+                            bundle.putSerializable("switch_fragment",
+                                    BlackHomeFragment.newInstance(weatherId));
+//                            startActivity(intent);
+                            activity.setSwitchBundle(bundle);
+                            activity.getDrawerLayout().closeDrawers();
+                        }
                     }
                 }
             }
@@ -222,7 +273,7 @@ public class BlackChooseFragment extends Fragment {
      */
     private void queryFormServer(String address, final String type) {
         Log.i("MainActivity", "queryFormServer:执行 ");
-        showProgressDialog();
+//        showProgressDialog();
         NetworkUtils.sendOkHttpRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -230,8 +281,7 @@ public class BlackChooseFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        closeProgressDialog();
-                        // TODO hard-code warning
+//                        closeProgressDialog();
                         Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -254,7 +304,7 @@ public class BlackChooseFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            closeProgressDialog();
+//                            closeProgressDialog();
                             if ("province".equals(type)) {
                                 queryProvinces();
                             } else if ("city".equals(type)) {
@@ -269,31 +319,28 @@ public class BlackChooseFragment extends Fragment {
         });
     }
 
-    /**
-     * Show ProgressDialog
-     */
-    private void showProgressDialog() {
-        Log.i("MainActivity", "showProgressDialog: 执行");
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            // TODO hard-code warning
-            mProgressDialog.setMessage("正在加载");
-
-            // .dialog.setCancelable(false):dialog弹出后会点击屏幕或物理返回键，dialog不消失
-            // .dialog.setCanceledOnTouchOutside(false):dialog弹出后会点击屏幕，dialog不消失,
-            // 点击物理返回键dialog消失
-            mProgressDialog.setCanceledOnTouchOutside(false);
-        }
-        mProgressDialog.show();
-    }
-
-    /**
-     * close ProgressDialog
-     */
-    private void closeProgressDialog() {
-        Log.i("MainActivity", "closeProgressDialog: 执行");
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-        }
-    }
+//    /**
+//     * Show ProgressDialog
+//     */
+//    private void showProgressDialog() {
+//        Log.i("MainActivity", "showProgressDialog: 执行");
+//        if (mProgressBar == null) {
+//            mProgressBar = new ProgressBar(getActivity());
+//            // .dialog.setCancelable(false):dialog弹出后会点击屏幕或物理返回键，dialog不消失
+//            // .dialog.setCanceledOnTouchOutside(false):dialog弹出后会点击屏幕，dialog不消失,
+//            // 点击物理返回键dialog消失
+//            mProgressDialog.setCanceledOnTouchOutside(false);
+//        }
+//        mProgressBar.show();
+//    }
+//
+//    /**
+//     * close ProgressDialog
+//     */
+//    private void closeProgressDialog() {
+//        Log.i("MainActivity", "closeProgressDialog: 执行");
+//        if (mProgressDialog != null) {
+//            mProgressDialog.dismiss();
+//        }
+//    }
 }

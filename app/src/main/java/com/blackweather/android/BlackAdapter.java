@@ -1,8 +1,6 @@
 package com.blackweather.android;
 
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,7 @@ import com.blackweather.android.customView.CircleView;
 import com.blackweather.android.customView.DataView;
 import com.blackweather.android.gson.Forecast;
 import com.blackweather.android.gson.Weather;
-import com.blackweather.android.utilities.BlackUtil;
+import com.blackweather.android.utilities.BlackUtils;
 
 /**
  * 定义RecyclerView的adapter
@@ -51,9 +49,9 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
         private TextView weatherDescriptionTextView;
         private TextView maxTempTextView;
         private TextView minTempTextView;
-        private ImageView moreImageView;
-        private View lineView;
+//        private View lineView;
         // today的view
+        private TextView loctionTextView;
         private CircleView humidityCircleView;
         private DataView humidityDataView;
         private CircleView precipCircleView;
@@ -66,12 +64,12 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
 
         public BlackHolder(View itemView) {
             super(itemView);
+            loctionTextView = itemView.findViewById(R.id.item_location);
             dateTextView = itemView.findViewById(R.id.date);
             iconImageView = itemView.findViewById(R.id.weather_icon);
             weatherDescriptionTextView = itemView.findViewById(R.id.weather_description);
             maxTempTextView = itemView.findViewById(R.id.high_temperature);
             minTempTextView = itemView.findViewById(R.id.low_temperature);
-            moreImageView = itemView.findViewById(R.id.more);
             humidityCircleView = itemView.findViewById(R.id.humidity_circle);
             humidityDataView = itemView.findViewById(R.id.humidity_data);
             precipCircleView = itemView.findViewById(R.id.precip_circle);
@@ -80,7 +78,6 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
             windDataView = itemView.findViewById(R.id.wind_data);
             uvBarView = itemView.findViewById(R.id.uv_bar);
             uvDataView = itemView.findViewById(R.id.uv_data);
-//            lineView = itemView.findViewById(R.id.line_view);
         }
     }
 
@@ -112,6 +109,7 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
                 String windScale = windScaleStr.split("-")[1];
                 float windScaleF = Float.parseFloat(windScale);
 
+                blackHolder.loctionTextView.setText(mWeather.basic.location);
                 blackHolder.dateTextView.setText(forecast.date);
                 blackHolder.weatherDescriptionTextView.setText(forecast.textDay);
                 blackHolder.maxTempTextView.setText(forecast.tempMax + "\u00b0");
@@ -124,7 +122,7 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
                         100);
                 blackHolder.precipDataView.setData(Float.parseFloat(forecast.precip),
                         "%");
-                blackHolder.iconImageView.setImageResource(BlackUtil.
+                blackHolder.iconImageView.setImageResource(BlackUtils.
                         getIconResInDay(Integer.parseInt(forecast.codeDay)));
                 blackHolder.windBarView.setData(windScaleF, 15);
                 blackHolder.windDataView.setData(windScaleF, null);
@@ -136,7 +134,7 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
                 blackHolder.weatherDescriptionTextView.setText(forecast.textDay);
                 blackHolder.maxTempTextView.setText(forecast.tempMax + "\u00b0");
                 blackHolder.minTempTextView.setText(forecast.tempMin + "\u00b0");
-                blackHolder.iconImageView.setImageResource(BlackUtil.
+                blackHolder.iconImageView.setImageResource(BlackUtils.
                         getIconResInDay(Integer.parseInt(forecast.codeDay)));
                 break;
             default:
@@ -146,7 +144,7 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
 
     @Override
     public int getItemCount() {
-        return mWeather.forecastList.size();
+        return mWeather == null ? 0 : mWeather.forecastList.size();
     }
 
     @Override

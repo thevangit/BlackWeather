@@ -4,19 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/trans_parent_black"
     android:paddingTop="@dimen/list_item_margin_large"
-    android:paddingBottom="@dimen/list_item_margin_large">
+    android:paddingBottom="@dimen/list_item_margin_large"
+    tools:background="@color/trans_parent_black">
 
+    <TextView
+        android:id="@+id/item_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary_text"
+        android:textSize="@dimen/list_item_text_size_small"
+        app:layout_constraintBottom_toTopOf="@+id/date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="贞丰" />
 
     <ImageView
         android:id="@+id/weather_icon"
         android:layout_width="@dimen/list_item_image_size_large"
         android:layout_height="@dimen/list_item_image_size_large"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="96dp"
         android:src="@drawable/art_clouds"
         app:layout_constraintEnd_toStartOf="@+id/guideline_vertical"
-        app:layout_constraintHorizontal_bias="0.395"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/art_light_rain" />
@@ -47,19 +57,16 @@
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/list_item_margin_small"
-        android:layout_marginEnd="@dimen/list_item_margin_small"
-        android:layout_marginBottom="@dimen/list_item_margin_large"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/primary_text"
         android:textSize="@dimen/list_item_text_size_small_small"
         app:layout_constraintBottom_toTopOf="@+id/weather_icon"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_vertical"
-        app:layout_constraintHorizontal_bias="0.482"
-        app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_location"
         tools:text="今日，1-16" />
 
     <TextView
@@ -218,10 +225,10 @@
 
     <ImageView
         android:id="@+id/more"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:layout_marginEnd="16dp"
-        android:src="@android:drawable/ic_media_play"
+        android:src="@drawable/ic_more"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

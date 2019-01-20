@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_1"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <include layout="@layout/title"/>
-
-    <!--android:clipToPadding:是否裁剪子view-->
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/home_recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false" />
+        android:background="@color/trans_parent_black"
+        android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/home_loading_indicator"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_gravity="center"
-        android:visibility="invisible" />
+        <!--android:clipToPadding:是否裁剪子view-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/home_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false" />
 
-</LinearLayout>
+        <ProgressBar
+            android:id="@+id/home_loading_indicator"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
 
+    </LinearLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

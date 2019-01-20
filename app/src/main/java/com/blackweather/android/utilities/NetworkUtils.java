@@ -25,7 +25,7 @@ public final class NetworkUtils {
     /* 使用了和风天气的免费API接口,www.heweather.com */
     /* - - - - - - - - - - - - - - - - - - - - - - - */
     private static final String BASE_WEATHER_URL = "https://free-api.heweather.net/s6/";
-    // 预留部分：实时天气预报URL的层级部分
+    // 预留部分,实时天气预报URL的层级部分
     private static final String REAL_TIME_BASE_URL = BASE_WEATHER_URL + "weather/now";
     // 逐日天气预报URL的层级部分
     private static final String DAILY_BASE_URL = BASE_WEATHER_URL + "weather/forecast";
@@ -38,7 +38,7 @@ public final class NetworkUtils {
 
     /**
      * 1.build url
-     * 方法的作用（职责）是以指定的经度和纬度为基础构建连接服务器的url
+     * 方法的作用是以指定的经度和纬度为基础构建连接服务器的url
      *
      * @param longtitude 经度
      * @param latiude 纬度
@@ -131,12 +131,12 @@ public final class NetworkUtils {
         client.newCall(request).enqueue(callback);
     }
 
-    /**
-     * 根据weatherId获取天气数据
-     */
-    synchronized public static void requestWeatherWith
-            (String weatherId, okhttp3.Callback callback) throws MalformedURLException {
-        URL url = buildUrlWithWeatherId(weatherId);
-        sendOkHttpRequest(url, callback);
-    }
+//    /**
+//     * 根据weatherId获取天气数据
+//     */
+//    synchronized public static void requestWeatherWith
+//            (String weatherId, okhttp3.Callback callback) throws MalformedURLException {
+//        URL url = buildUrlWithWeatherId(weatherId);
+//        sendOkHttpRequest(url, callback);
+//    }
 }

@@ -1,7 +1,5 @@
 package com.blackweather.android.gson;
 
-import android.support.v4.widget.SwipeRefreshLayout;
-
 import com.google.gson.annotations.SerializedName;
 
 public class Forecast {

@@ -5,11 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/trans_parent_black"
     android:paddingLeft="@dimen/list_item_padding_horizontal"
     android:paddingTop="@dimen/list_item_margin_large"
     android:paddingRight="@dimen/list_item_padding_horizontal"
-    android:paddingBottom="@dimen/list_item_margin_large">
+    android:paddingBottom="@dimen/list_item_margin_large"
+    tools:background="@color/trans_parent_black">
 
     <ImageView
         android:id="@+id/weather_icon"
@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:srcCompat="@mipmap/bw_3" />
+        app:srcCompat="@drawable/ic_cloudy" />
 
     <TextView
         android:id="@+id/date"
@@ -89,12 +89,12 @@
 
     <ImageView
         android:id="@+id/more"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@android:drawable/ic_media_play"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:src="@drawable/ic_more"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:srcCompat="@android:drawable/ic_media_play" />
+        app:srcCompat="@drawable/ic_more" />
 
 </android.support.constraint.ConstraintLayout>

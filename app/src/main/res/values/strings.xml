@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">黑人天气</string>
+    <string name="app_name">黑白天气</string>
 
     <!--偏好设置中的单位设置-->
     <string name="pref_units_key" translatable="false">units</string>
