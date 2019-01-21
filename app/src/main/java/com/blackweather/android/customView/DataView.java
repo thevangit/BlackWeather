@@ -1,5 +1,6 @@
 package com.blackweather.android.customView;
 
+import android.content.res.TypedArray;
 import android.support.v7.widget.AppCompatTextView;
 
 import android.animation.ValueAnimator;
@@ -8,12 +9,15 @@ import android.util.AttributeSet;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.animation.DecelerateInterpolator;
 
+import com.blackweather.android.R;
+
 
 public class DataView extends AppCompatTextView {
 
     private ValueAnimator mAnimator;
     private float mValue;
     private String mUnit;
+    private boolean isRound;
 
     public DataView(Context context) {
         super(context);
@@ -23,6 +27,9 @@ public class DataView extends AppCompatTextView {
     public DataView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DataView);
+        isRound = typedArray.getBoolean(R.styleable.DataView_isRound, false);
+        typedArray.recycle();
     }
 
     private void init() {
@@ -31,8 +38,11 @@ public class DataView extends AppCompatTextView {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float curValue = (float) animation.getAnimatedValue() * mValue;
-                setText(String.format("%.1f", curValue) + getUnit());
-                invalidate();
+                if (isRound) {
+                    setText(String.format("%.0f", curValue) + getUnit());
+                } else {
+                    setText(String.format("%.1f", curValue) + getUnit());
+                }invalidate();
             }
         });
         mAnimator.setDuration(1000);

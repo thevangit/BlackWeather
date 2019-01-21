@@ -1,6 +1,5 @@
 package com.blackweather.android;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,14 +33,23 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class BlackChooseFragment extends Fragment {
+public class FBlackChooseFragment extends Fragment {
+
+    private static final String TAG = FBlackChooseFragment.class.getSimpleName();
+
+    private OnLocationSelectedListener mListener;
+
+    interface OnLocationSelectedListener{
+        public void onPlusLocationSelected();
+        public void onSwapLocationSelected();
+    }
 
     private int mState;
-    public static final int STATE_PLUS_PAGE = 0;
-    public static final int STATE_REFRESH_PAGE = 1;
+    public static final int STATE_PLUS_PAGE = 1;
+    public static final int STATE_SWAP_PAGE = 2;
 
-    public static BlackChooseFragment newInstance(int stateData) {
-        BlackChooseFragment bhf = new BlackChooseFragment();
+    public static FBlackChooseFragment newInstance(int stateData) {
+        FBlackChooseFragment bhf = new FBlackChooseFragment();
         Bundle args = new Bundle();
         args.putInt("state", stateData);
         bhf.setArguments(args);
@@ -114,7 +122,7 @@ public class BlackChooseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.choose_area, container, false);
+        View view = inflater.inflate(R.layout.fragment_choose_area, container, false);
         mTitleText = view.findViewById(R.id.title_text);
         mBackButton = view.findViewById(R.id.back_button);
         mListView = view.findViewById(R.id.list_view);
@@ -139,44 +147,23 @@ public class BlackChooseFragment extends Fragment {
                     queryCounties();
                 } else if (mCurrentLevel == LEVEL_COUNTY) {
                     String weatherId = mCountyList.get(position).getWeatherId();
+                    String location = mCountyList.get(position).getCountyName();
                     if (getActivity() instanceof BlackMainActivity) {
                         Intent intent = new Intent(getActivity(), BlackHomeActivity.class);
                         intent.putExtra("weather_id", weatherId);
                         startActivity(intent);
                         getActivity().finish();
                     } else if (getActivity() instanceof BlackHomeActivity) {
-//                        BlackHomeActivity activity = (BlackHomeActivity) getActivity();
-//                        activity.getDrawerLayout().closeDrawers();
-//                        activity.getSwipeRefresh().setRefreshing(true);
-//                        activity.requestWeather(weatherId);
                         BlackHomeActivity activity = (BlackHomeActivity) getActivity();
-                        Bundle bundle = new Bundle();
-
                         if (mState == STATE_PLUS_PAGE) {
-                                bundle.putSerializable("add_fragment",
-                                        BlackHomeFragment.newInstance(weatherId));
-                                activity.setPlusBundle(bundle);
-                                activity.getDrawerLayout().closeDrawers();
-
-//                            Intent intent = new Intent(getActivity(), BlackHomeActivity.class);
-//                            intent.putExtra("new_fragment",
-//                                    BlackHomeFragment.newInstance(weatherId));
-//                            BlackHomeActivity activity = (BlackHomeActivity) getActivity();
-//                            activity.getDrawerLayout().closeDrawers();
-//                            getActivity().finish();
-
-
-//                        activity.getSwipeRefresh().setRefreshing(true);
-//                        activity.requestWeather(weatherId);
-                        }else if (mState == STATE_REFRESH_PAGE) {
-//                            Bundle intent = new Intent(getActivity(), BlackHomeActivity.class);
-
-                            bundle.putSerializable("switch_fragment",
-                                    BlackHomeFragment.newInstance(weatherId));
-//                            startActivity(intent);
-                            activity.setSwitchBundle(bundle);
+                            activity.plusPage(weatherId);
+                            activity.getDrawerLayout().closeDrawers();
+                        }else if (mState == STATE_SWAP_PAGE) {
+                            activity.swapCurrentPage(weatherId);
                             activity.getDrawerLayout().closeDrawers();
                         }
+                        Log.d(TAG, "debug state: " + mState + "-" + location + " weather_id: "
+                                + weatherId);
                     }
                 }
             }

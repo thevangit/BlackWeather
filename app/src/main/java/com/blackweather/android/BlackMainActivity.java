@@ -16,29 +16,18 @@ import java.util.List;
  */
 public class BlackMainActivity extends AppCompatActivity {
 
-    private String mHomeFragmentWeatherId; // 首先选择的weatherId。
-
-    public static final int REQUEST_CODE_FOR_WEATHERID = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         List pagesWeatherId = SharedPreferenceUtils.fetchPagesWeatherId(this,
                 SharedPreferenceUtils.PAGES_WEATHER_ID_KEY);
+        // 如果有缓存则直接进入页面
         if (pagesWeatherId != null && pagesWeatherId.size() > 0) {
             Intent intent = new Intent(this, BlackHomeActivity.class);
             startActivity(intent);
             finish();
         }
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        String
-//        if (prefs.getString("weather", null) != null) {
-//            Intent intent = new Intent(this, BlackHomeActivity.class);
-//            // 请求码的值随便设置，但必须>=0
-////            startActivityForResult(intent, REQUEST_CODE_FOR_WEATHERID);
-//            startActivity(intent);
-//            finish();
-//        }
     }
+
 }

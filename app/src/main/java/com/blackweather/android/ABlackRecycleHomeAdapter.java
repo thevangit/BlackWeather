@@ -17,7 +17,7 @@ import com.blackweather.android.utilities.BlackUtils;
 /**
  * 定义RecyclerView的adapter
  */
-public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder> {
+public class ABlackRecycleHomeAdapter extends RecyclerView.Adapter<ABlackRecycleHomeAdapter.BlackHolder> {
 
     // 不同的item view的常量
     private static final int VIEW_TYPE_TODAY = 0;
@@ -27,7 +27,7 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
 
     private Weather mWeather;
 
-    public BlackAdapter() {
+    public ABlackRecycleHomeAdapter() {
         super();
     }
 
@@ -60,6 +60,8 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
         private DataView windDataView;
         private BarView uvBarView;
         private DataView uvDataView;
+        private DataView highDataView;
+        private DataView lowDataView;
 
 
         public BlackHolder(View itemView) {
@@ -78,6 +80,8 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
             windDataView = itemView.findViewById(R.id.wind_data);
             uvBarView = itemView.findViewById(R.id.uv_bar);
             uvDataView = itemView.findViewById(R.id.uv_data);
+            highDataView = itemView.findViewById(R.id.high_temperature_data);
+            lowDataView = itemView.findViewById(R.id.low_temperature_data);
         }
     }
 
@@ -86,10 +90,10 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
         int layoutId;
         switch (viewType) {
             case VIEW_TYPE_TODAY:
-                layoutId = R.layout.home_today_item;
+                layoutId = R.layout.fragment_today_item;
                 break;
             case VIEW_TYPE_FUTURE:
-                layoutId = R.layout.home_list_item;
+                layoutId = R.layout.fragment_list_item;
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -112,8 +116,10 @@ public class BlackAdapter extends RecyclerView.Adapter<BlackAdapter.BlackHolder>
                 blackHolder.loctionTextView.setText(mWeather.basic.location);
                 blackHolder.dateTextView.setText(forecast.date);
                 blackHolder.weatherDescriptionTextView.setText(forecast.textDay);
-                blackHolder.maxTempTextView.setText(forecast.tempMax + "\u00b0");
-                blackHolder.minTempTextView.setText(forecast.tempMin + "\u00b0");
+                blackHolder.highDataView.setData(Math.round(Float.parseFloat(forecast.tempMax)),
+                        "\u00b0");
+                blackHolder.lowDataView.setData(Math.round(Float.parseFloat(forecast.tempMin)),
+                        "\u00b0");
                 blackHolder.humidityCircleView.setData(Float.parseFloat(forecast.humidity),
                         100);
                 blackHolder.humidityDataView.setData(Float.parseFloat(forecast.humidity),

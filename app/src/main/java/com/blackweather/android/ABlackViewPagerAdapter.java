@@ -2,17 +2,15 @@ package com.blackweather.android;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.PagerAdapter;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class BlackFragPagerAdapter extends FragmentPagerAdapter {
+public class ABlackViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    private List<BlackHomeFragment> mFragments;
+    private List<FBlackHomeFragment> mFragments;
 
     private int mPosition;
 
@@ -22,7 +20,7 @@ public class BlackFragPagerAdapter extends FragmentPagerAdapter {
 
     private FragmentManager mFm;
 
-    public BlackFragPagerAdapter(FragmentManager fm, List<BlackHomeFragment> fragments) {
+    public ABlackViewPagerAdapter(FragmentManager fm, List<FBlackHomeFragment> fragments) {
         super(fm);
         mFm = fm;
         mFragments = fragments;
@@ -55,9 +53,8 @@ public class BlackFragPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        //TODO 这是重点继续研究
-        //return super.getItemPosition(object);//默认是不改变
-        return POSITION_NONE;//可以即时刷新
+        // 可以即时刷新,相当于告诉view pager不要缓存之间的fragment
+        return POSITION_NONE;
     }
 
 

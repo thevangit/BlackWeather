@@ -1,5 +1,6 @@
 package com.blackweather.android;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -28,15 +29,14 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class BlackHomeFragment extends Fragment implements Serializable {
+public class FBlackHomeFragment extends Fragment implements Serializable {
 
-    private final String TAG = BlackHomeFragment.class.getSimpleName();
+    private static final String TAG = FBlackHomeFragment.class.getSimpleName();
+    public static final String BUNDLE_WEATHER_ID_KEY = "bundle_weather_id";
 
     private String mWeatherId;
-
     private RecyclerView mHomeRecyclerView;
-    private BlackAdapter mAdapter = new BlackAdapter();
-
+    private ABlackRecycleHomeAdapter mAdapter = new ABlackRecycleHomeAdapter();
     private SwipeRefreshLayout mRefreshLayout;
 
     /**
@@ -45,13 +45,17 @@ public class BlackHomeFragment extends Fragment implements Serializable {
      * @param dataStr 字符串数据
      * @return 返回实例
      */
-    public static BlackHomeFragment newInstance(String dataStr) {
-        BlackHomeFragment blackHomeFragment = new BlackHomeFragment();
+    public static FBlackHomeFragment newInstance(String dataStr) {
+        FBlackHomeFragment blackHomeFragment = new FBlackHomeFragment();
         Bundle args = new Bundle();
-        args.putString("weatherId", dataStr);
+        args.putString(BUNDLE_WEATHER_ID_KEY, dataStr);
         blackHomeFragment.setArguments(args);
+
+        Log.d(TAG, "debug newInstance: dataStr: " + dataStr);
+
         return blackHomeFragment;
     }
+
 
     /**
      * 在onCrate()中获取data而不在onCreateView()中获取，因为onCreateView不一定会被调用。
@@ -61,17 +65,32 @@ public class BlackHomeFragment extends Fragment implements Serializable {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-            mWeatherId = args.getString("weatherId");
-        } else {
-            mWeatherId = null;
+            mWeatherId = args.getString(BUNDLE_WEATHER_ID_KEY);
         }
+        Log.d(TAG, "debug onCreate: bundlweatherid: " + args.getString(BUNDLE_WEATHER_ID_KEY));
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Bundle args = getArguments();
+        if (args != null) {
+            mWeatherId = args.getString(BUNDLE_WEATHER_ID_KEY);
+        }
+        Log.d(TAG, "onAttach: 执行" );
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.home_page, container, false);
+        Bundle args = getArguments();
+        if (args != null) {
+            mWeatherId = args.getString(BUNDLE_WEATHER_ID_KEY);
+        }
+        Log.d(TAG, "debug onCreateView: 执行");
+        
+        View view = inflater.inflate(R.layout.fragment_page, container, false);
         // bind view
         mHomeRecyclerView = view.findViewById(R.id.home_recycler_view);
         mRefreshLayout = view.findViewById(R.id.swipe_refresh);
@@ -132,15 +151,21 @@ public class BlackHomeFragment extends Fragment implements Serializable {
      * 根据天气id请求城市天气数据
      */
     private void requestWeather(final String weatherId) throws MalformedURLException {
+        if (weatherId == null) {
+            Toast.makeText(getActivity(), "weatherId为空",
+                    Toast.LENGTH_SHORT).show();
+//            getActivity().sendWeatherId(String newWeatherId);
+            return;
+        }
         URL url = NetworkUtils.buildUrlWithWeatherId(weatherId);
-        Log.i(TAG, "requestWeather: url = " + url );
+        Log.i(TAG, "requestWeather: url = " + url);
         NetworkUtils.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), "获取天气信息失败2",
+                        Toast.makeText(getActivity(), "获取天气信息失败1",
                                 Toast.LENGTH_SHORT).show();
                         mRefreshLayout.setRefreshing(false);
                     }
@@ -149,8 +174,13 @@ public class BlackHomeFragment extends Fragment implements Serializable {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                final String responseText = response.body().string();
-                final Weather weather = JsonUtils.handleWeatherResponse(responseText);
+                if (response.body() == null) {
+                    Toast.makeText(getActivity(), "response错误", Toast.LENGTH_SHORT).show();
+                    return;
+                };
+                final String responseStr = response.body().string();
+                final Weather weather = JsonUtils.handleWeatherResponse(responseStr);
+                if (getActivity() == null) {return;}
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -158,11 +188,11 @@ public class BlackHomeFragment extends Fragment implements Serializable {
                             SharedPreferences.Editor editor = PreferenceManager
                                     .getDefaultSharedPreferences(getActivity())
                                     .edit();
-                            editor.putString(weatherId, responseText);
+                            editor.putString(weatherId, responseStr);
                             editor.apply();
                             mAdapter.setData(weather);
                         } else {
-                            Toast.makeText(getActivity(), "获取天气信息失败",
+                            Toast.makeText(getActivity(), "获取天气信息失败3",
                                     Toast.LENGTH_SHORT).show();
                         }
                         mRefreshLayout.setRefreshing(false);
@@ -172,7 +202,7 @@ public class BlackHomeFragment extends Fragment implements Serializable {
         });
     }
 
-    public String getWeatherId(){
+    public String getWeatherId() {
         return mWeatherId;
     }
 

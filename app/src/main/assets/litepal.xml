@@ -9,6 +9,7 @@
         <mapping class="com.blackweather.android.litePalDatabase.Province" />
         <mapping class="com.blackweather.android.litePalDatabase.City" />
         <mapping class="com.blackweather.android.litePalDatabase.County" />
+        <mapping class="com.blackweather.android.litePalDatabase.SavedWeatherIds" />
     </list>
 
 </litepal>

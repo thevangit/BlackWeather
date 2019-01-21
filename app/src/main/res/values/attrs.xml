@@ -10,4 +10,9 @@
         <attr name="width" format="dimension|reference"/>
     </declare-styleable>
 
+    <declare-styleable name="DataView">
+        <attr name="isRound" format="boolean">
+        </attr>
+    </declare-styleable>
+
 </resources>
