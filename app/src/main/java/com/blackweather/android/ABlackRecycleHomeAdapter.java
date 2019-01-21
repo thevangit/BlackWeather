@@ -13,6 +13,7 @@ import com.blackweather.android.customView.DataView;
 import com.blackweather.android.gson.Forecast;
 import com.blackweather.android.gson.Weather;
 import com.blackweather.android.utilities.BlackUtils;
+import com.blackweather.android.utilities.PreferenceUtils;
 
 /**
  * 定义RecyclerView的adapter
@@ -107,6 +108,12 @@ public class ABlackRecycleHomeAdapter extends RecyclerView.Adapter<ABlackRecycle
     public void onBindViewHolder(BlackHolder blackHolder, int position) {
         Forecast forecast = mWeather.forecastList.get(position);
         int viewType = getItemViewType(position);
+        float highTempF = Float.parseFloat(forecast.tempMax);
+        float lowTempf = Float.parseFloat(forecast.tempMin);
+        if (!PreferenceUtils.isMetric(BlackApplication.getContext())) {
+            highTempF = BlackUtils.celsiusToFahrenheit(highTempF);
+            lowTempf = BlackUtils.celsiusToFahrenheit(lowTempf);
+        }
         switch (viewType) {
             case VIEW_TYPE_TODAY:
                 String windScaleStr = forecast.windScale;
@@ -116,10 +123,8 @@ public class ABlackRecycleHomeAdapter extends RecyclerView.Adapter<ABlackRecycle
                 blackHolder.loctionTextView.setText(mWeather.basic.location);
                 blackHolder.dateTextView.setText(forecast.date);
                 blackHolder.weatherDescriptionTextView.setText(forecast.textDay);
-                blackHolder.highDataView.setData(Math.round(Float.parseFloat(forecast.tempMax)),
-                        "\u00b0");
-                blackHolder.lowDataView.setData(Math.round(Float.parseFloat(forecast.tempMin)),
-                        "\u00b0");
+                blackHolder.highDataView.setData(Math.round(highTempF),"\u00b0");
+                blackHolder.lowDataView.setData(Math.round(lowTempf),"\u00b0");
                 blackHolder.humidityCircleView.setData(Float.parseFloat(forecast.humidity),
                         100);
                 blackHolder.humidityDataView.setData(Float.parseFloat(forecast.humidity),
@@ -138,8 +143,10 @@ public class ABlackRecycleHomeAdapter extends RecyclerView.Adapter<ABlackRecycle
             case VIEW_TYPE_FUTURE:
                 blackHolder.dateTextView.setText(forecast.date);
                 blackHolder.weatherDescriptionTextView.setText(forecast.textDay);
-                blackHolder.maxTempTextView.setText(forecast.tempMax + "\u00b0");
-                blackHolder.minTempTextView.setText(forecast.tempMin + "\u00b0");
+                blackHolder.maxTempTextView.setText(String.
+                        valueOf(Math.round(highTempF)) + "\u00b0");
+                blackHolder.minTempTextView.setText(String.
+                        valueOf(Math.round(lowTempf)) + "\u00b0");
                 blackHolder.iconImageView.setImageResource(BlackUtils.
                         getIconResInDay(Integer.parseInt(forecast.codeDay)));
                 break;

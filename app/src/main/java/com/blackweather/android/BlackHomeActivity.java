@@ -1,5 +1,7 @@
 package com.blackweather.android;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
@@ -15,11 +17,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.blackweather.android.litePalDatabase.SavedWeatherIds;
-import com.blackweather.android.utilities.SharedPreferenceUtils;
+import com.blackweather.android.service.AutoUpdateService;
+import com.blackweather.android.utilities.PreferenceUtils;
 import com.bumptech.glide.Glide;
 import com.rd.PageIndicatorView;
-
-import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,13 @@ import java.util.List;
 /**
  * d90:Author:theVan
  */
-public class BlackHomeActivity extends AppCompatActivity {
+public class BlackHomeActivity extends AppCompatActivity implements SharedPreferences
+.OnSharedPreferenceChangeListener{
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(TAG, "settings onSharedPreferenceChanged: activity" + "执行");
+    }
 
     private static final String TAG = BlackHomeActivity.class.getSimpleName();
 
@@ -45,6 +52,7 @@ public class BlackHomeActivity extends AppCompatActivity {
     private Button mDeleteButton;
     private Button mSwitchButton;
     private ImageView mBcPicImg;
+    private Button mSettingsButton;
 
 
     @Override
@@ -61,6 +69,7 @@ public class BlackHomeActivity extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.blackActivity_drawer_layout);
         mSwitchButton = findViewById(R.id.titel_switch_button);
         mBcPicImg = findViewById(R.id.bc_pic_img);
+        mSettingsButton = findViewById(R.id.title_settings_button);
         mPagerAdapter = new ABlackViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -118,7 +127,17 @@ public class BlackHomeActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
+        mSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BlackHomeActivity.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
 
+        // 开启后台更新Service
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     /**
@@ -155,8 +174,8 @@ public class BlackHomeActivity extends AppCompatActivity {
     }
 
     private void initFragments() {
-        List<String> strings = SharedPreferenceUtils.fetchPagesWeatherId(
-                this, SharedPreferenceUtils.PAGES_WEATHER_ID_KEY);
+        List<String> strings = PreferenceUtils.fetchPagesWeatherId(
+                this, PreferenceUtils.PAGES_WEATHER_ID_KEY);
         if (strings != null && strings.size() > 0) {
             int i = 0;
             for (String str : strings) {
@@ -180,7 +199,7 @@ public class BlackHomeActivity extends AppCompatActivity {
         if (newWeatherId != null) {
             // 删除本地化数据
             int curPosition = mViewPager.getCurrentItem();
-            SharedPreferenceUtils.removeKeyValuePair(this,
+            PreferenceUtils.removeKeyValuePair(this,
                     mFragments.get(curPosition).getWeatherId());
             // 切换城市
             swapFragment(FBlackHomeFragment.newInstance(newWeatherId));
@@ -209,7 +228,7 @@ public class BlackHomeActivity extends AppCompatActivity {
         if (curPosition > 0) {
             // 删除本地数据
             String curWeatherId = mFragments.get(curPosition).getWeatherId();
-            SharedPreferenceUtils.removeKeyValuePair(this,
+            PreferenceUtils.removeKeyValuePair(this,
                     curWeatherId);
             mFragments.remove(curPosition);
             mPagerAdapter.notifyDataSetChanged();
@@ -226,17 +245,25 @@ public class BlackHomeActivity extends AppCompatActivity {
         super.onPause();
 
         // 保存数据
+//        List<String> pagesWeatherIds = SharedPreferenceUtils.fetchPagesWeatherId(
+//                this, SharedPreferenceUtils.PAGES_WEATHER_ID_KEY);
+//        if (pagesWeatherIds.size() > 0 && pagesWeatherIds != null) {
+//            SharedPreferenceUtils.removeKeyValuePair(this,
+//                    SharedPreferenceUtils.PAGES_WEATHER_ID_KEY);
+//        }
         List<String> pagesWeatherIds = new ArrayList<>();
-        if (pagesWeatherIds.size() > 0) {
-            pagesWeatherIds.clear();
-        }
         int i = 0;
         for (FBlackHomeFragment bhf : mFragments) {
-            pagesWeatherIds.add(bhf.getWeatherId());
+            String weatherId = bhf.getWeatherId();
+            if (weatherId != null){
+                pagesWeatherIds.add(bhf.getWeatherId());
+
+            }
             Log.d(TAG, "debug onPause: " + i++ +" - "+ bhf.getWeatherId() );
+            Log.d(TAG, "debug onPause: " + pagesWeatherIds);
         }
-        SharedPreferenceUtils.savedPagesWeatherId(this,
-                SharedPreferenceUtils.PAGES_WEATHER_ID_KEY, pagesWeatherIds);
+        PreferenceUtils.savedPagesWeatherId(this,
+                PreferenceUtils.PAGES_WEATHER_ID_KEY, pagesWeatherIds);
     }
 
     /**

@@ -214,7 +214,6 @@
         android:id="@+id/wind_data"
         style="@style/hint_text_style"
         app:layout_constraintBottom_toBottomOf="@+id/wind_barView"
-        app:layout_constraintEnd_toEndOf="@+id/humidity_circle"
         app:layout_constraintStart_toEndOf="@+id/wind_barView"
         app:layout_constraintTop_toTopOf="@+id/wind_barView"
         tools:text="9" />

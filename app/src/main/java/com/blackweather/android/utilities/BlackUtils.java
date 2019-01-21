@@ -34,4 +34,12 @@ public final class BlackUtils {
         else return R.mipmap.bw_3;
     }
 
+    /**
+     * 把摄氏度转换为华氏度
+     */
+    public static float celsiusToFahrenheit(float temperatureInCelsius) {
+        float temperatureInFahrenheit = (float) ((temperatureInCelsius * 1.8) + 32);
+        return temperatureInFahrenheit;
+    }
+
 }

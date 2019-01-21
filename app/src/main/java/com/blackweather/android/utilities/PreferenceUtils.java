@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class SharedPreferenceUtils {
+public final class PreferenceUtils {
 
 //    private static SharedPreferences prefs;
 //    private static SharedPreferences.Editor editor;
@@ -43,7 +43,8 @@ public final class SharedPreferenceUtils {
 
     public static final String PAGES_WEATHER_ID_KEY = "pages_weather_id";
 
-    private SharedPreferenceUtils(){}
+    private PreferenceUtils() {
+    }
 
     public static void removeKeyValuePair(Context context, String key) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -54,7 +55,7 @@ public final class SharedPreferenceUtils {
     /**
      * 保存list
      */
-    public static  <E> void savedPagesWeatherId(Context context, String key, List<E> datas) {
+    public static <E> void savedPagesWeatherId(Context context, String key, List<E> datas) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
 
@@ -71,7 +72,7 @@ public final class SharedPreferenceUtils {
     /**
      * 读取list
      */
-    public static  <E> List<E> fetchPagesWeatherId(Context context, String key) {
+    public static <E> List<E> fetchPagesWeatherId(Context context, String key) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         List<E> datas = new ArrayList<>();
         String jsonStr = sp.getString(key, null);
@@ -124,6 +125,13 @@ public final class SharedPreferenceUtils {
             e.printStackTrace();
         }
         return obj;
+    }
+
+    public static boolean isMetric(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        String str = sp.getString(context.getString(R.string.pref_units_key),
+                context.getString(R.string.pref_units_metric));
+        return (str.equals(context.getString(R.string.pref_units_metric)));
     }
 
 }

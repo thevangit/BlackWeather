@@ -29,7 +29,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class FBlackHomeFragment extends Fragment implements Serializable {
+public class FBlackHomeFragment extends Fragment implements Serializable,
+        SharedPreferences.OnSharedPreferenceChangeListener{
 
     private static final String TAG = FBlackHomeFragment.class.getSimpleName();
     public static final String BUNDLE_WEATHER_ID_KEY = "bundle_weather_id";
@@ -67,27 +68,29 @@ public class FBlackHomeFragment extends Fragment implements Serializable {
         if (args != null) {
             mWeatherId = args.getString(BUNDLE_WEATHER_ID_KEY);
         }
+        PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .registerOnSharedPreferenceChangeListener(this);
         Log.d(TAG, "debug onCreate: bundlweatherid: " + args.getString(BUNDLE_WEATHER_ID_KEY));
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Bundle args = getArguments();
-        if (args != null) {
-            mWeatherId = args.getString(BUNDLE_WEATHER_ID_KEY);
-        }
-        Log.d(TAG, "onAttach: 执行" );
-    }
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        Bundle args = getArguments();
+//        if (args != null) {
+//            mWeatherId = args.getString(BUNDLE_WEATHER_ID_KEY);
+//        }
+//        Log.d(TAG, "onAttach: 执行" );
+//    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        if (args != null) {
-            mWeatherId = args.getString(BUNDLE_WEATHER_ID_KEY);
-        }
+//        Bundle args = getArguments();
+//        if (args != null) {
+//            mWeatherId = args.getString(BUNDLE_WEATHER_ID_KEY);
+//        }
         Log.d(TAG, "debug onCreateView: 执行");
         
         View view = inflater.inflate(R.layout.fragment_page, container, false);
@@ -206,7 +209,29 @@ public class FBlackHomeFragment extends Fragment implements Serializable {
         return mWeatherId;
     }
 
-//    /**
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(TAG, "settings onSharedPreferenceChanged: 执行");
+        mAdapter.notifyDataSetChanged();
+//        if (key.equals(getString(R.string.pref_units_key))) {
+//            try {
+//                requestWeather(mWeatherId);
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+    }
+
+//    @Override
+//    public void onUnitChange() {
+//        try {
+//            requestWeather(mWeatherId);
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    //    /**
 //     * 加载背景图片
 //     */
 //    private void loadBingPic() {

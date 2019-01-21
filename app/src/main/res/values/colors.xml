@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#616161</color>
-    <color name="colorPrimaryDark">#212121</color>
-    <color name="colorAccent">#41FAFAFA</color>
+    <color name="colorPrimaryDark">#414141</color>
+    <color name="colorAccent">#8000</color>
 
     <color name="white">#FFFFFF</color>
 
-    <color name="primary_text">#EEFFFFFF</color>
-    <color name="secondary_text">@android:color/darker_gray</color>
+    <color name="primary_text">#DDFFFFFF</color>
+    <color name="secondary_text">#616161</color>
+    <!--<color name="secondary_text">@android:color/darker_gray</color>-->
     <color name="third_text">#414141</color>
 
     <color name="trans_parent_black">#8000</color>
