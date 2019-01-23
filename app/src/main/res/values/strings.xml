@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">黑白天气</string>
 
+    <!--sharedPreferences keys-->
+    <string name="weather_id_key">weather_id_key</string>
+    <string name="pic_str_key">pic_key</string>
+
     <!--偏好设置-->
     <string name="pref_units_key" translatable="false">units</string>
     <string name="pref_units_metric" translatable="false">metric</string>
@@ -15,7 +19,7 @@
     <string name="pref_auto_update_Off">关闭</string>
 
     <!--fragment_page-->
-    <string name="connet_symbol">~</string>
+    <string name="connect_symbol">~</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->

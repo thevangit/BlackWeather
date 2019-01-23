@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/list_item_margin_large"
     android:paddingRight="@dimen/list_item_padding_horizontal"
     android:paddingBottom="@dimen/list_item_margin_large"
-    tools:background="@color/trans_parent_black">
+    android:background="@color/trans_parent_black">
 
     <ImageView
         android:id="@+id/weather_icon"
@@ -60,7 +60,7 @@
         android:id="@+id/connection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/connet_symbol"
+        android:text="@string/connect_symbol"
         android:textColor="@color/primary_text"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toStartOf="@+id/high_temperature"

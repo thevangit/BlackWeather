@@ -1,4 +1,4 @@
-package com.blackweather.android.litePalDatabase;
+package com.blackweather.android.data;
 
 import org.litepal.crud.LitePalSupport;
 

@@ -3,6 +3,10 @@ package com.blackweather.android.utilities;
 import android.content.Context;
 
 import com.blackweather.android.R;
+import com.blackweather.android.data.Info;
+import com.blackweather.android.gson.Weather;
+
+import java.util.List;
 
 public final class BlackUtils {
 
@@ -22,7 +26,7 @@ public final class BlackUtils {
         return (int) (pxValue / scale + 0.5f);
     }
 
-    public static int getIconResInDay(int code) {
+    public static int getIcoResWithCode(int code) {
         if (code == 100 || code == 900) return R.drawable.art_clear;
         else if (code == 103) return R.drawable.art_light_clouds;
         else if (code >= 101 && code <= 213) return R.drawable.art_clouds;
@@ -40,6 +44,12 @@ public final class BlackUtils {
     public static float celsiusToFahrenheit(float temperatureInCelsius) {
         float temperatureInFahrenheit = (float) ((temperatureInCelsius * 1.8) + 32);
         return temperatureInFahrenheit;
+    }
+
+    public static String celsiusToFahrenheit(String temperatureInCelsiusStr) {
+        float temperatureInCelsiusF = Float.valueOf(temperatureInCelsiusStr);
+        float temperatureInFahrenheitF = (float) ((temperatureInCelsiusF * 1.8) + 32);
+        return String.valueOf(temperatureInFahrenheitF);
     }
 
 }

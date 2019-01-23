@@ -6,10 +6,10 @@
     <version value ="1" />
 
     <list>
-        <mapping class="com.blackweather.android.litePalDatabase.Province" />
-        <mapping class="com.blackweather.android.litePalDatabase.City" />
-        <mapping class="com.blackweather.android.litePalDatabase.County" />
-        <mapping class="com.blackweather.android.litePalDatabase.SavedWeatherIds" />
+        <mapping class="com.blackweather.android.data.Province" />
+        <mapping class="com.blackweather.android.data.City" />
+        <mapping class="com.blackweather.android.data.County" />
+        <mapping class="com.blackweather.android.data.SavedWeatherIds" />
     </list>
 
 </litepal>

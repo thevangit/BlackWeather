@@ -1,6 +1,17 @@
 package com.blackweather.android.utilities;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.RouteInfo;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import android.widget.ImageView;
+
+import com.blackweather.android.HomeActivity;
+import com.blackweather.android.R;
+import com.bumptech.glide.Glide;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,9 +20,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Random;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Author: theVan
@@ -24,33 +39,34 @@ public final class NetworkUtils {
     /* - - - - - - - - - - - - - - - - - - - - - - - */
     /* 使用了和风天气的免费API接口,www.heweather.com */
     /* - - - - - - - - - - - - - - - - - - - - - - - */
-    private static final String BASE_WEATHER_URL = "https://free-api.heweather.net/s6/";
+    private static final String BASE_WEATHER_URL = "https://api.heweather.net/s6/";
     // 预留部分,实时天气预报URL的层级部分
     private static final String REAL_TIME_BASE_URL = BASE_WEATHER_URL + "weather/now";
     // 逐日天气预报URL的层级部分
     private static final String DAILY_BASE_URL = BASE_WEATHER_URL + "weather/forecast";
     // query部分
     private static final String KEY = "key";
-    private static final String KEY_PARAM = "2c356d0ee50b4f15b1894cbf05ad8f66";
+    private static final String KEY_PARAM = "5f1e588531514d65a6a08569774a17ec";
     private static final String LOCATION = "location";
     private static final String UNIT = "unit";
     private static final String UNIT_PARAM_IMPERIAL = "i";
+
 
     /**
      * 1.build url
      * 方法的作用是以指定的经度和纬度为基础构建连接服务器的url
      *
-     * @param longtitude 经度
-     * @param latiude 纬度
+     * @param longitude 经度
+     * @param latitude 纬度
      * @return url
      * @throws MalformedURLException
      */
-    private static URL buildUrlWithLonngtitdeLatitude(double longtitude, double latiude)
+    public static URL buildUrlWithLonngtitdeLatitude(double longitude, double latitude)
             throws MalformedURLException {
         // step1：构建uri,一般有两种构建方式，其中一种如下所示，另一种是利用Uri.Builder构造器
         Uri uri = Uri.parse(DAILY_BASE_URL).buildUpon()
                 .appendQueryParameter(KEY, KEY_PARAM)
-                .appendQueryParameter(LOCATION, longtitude + ":" + latiude)
+                .appendQueryParameter(LOCATION, longitude + "," + latitude)
                 .build();
         // step2：以step1中构建的uri为基础，构建逐日天气预报的url,记住throws exception
         URL url = new URL(uri.toString());
@@ -84,8 +100,9 @@ public final class NetworkUtils {
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         // step1：以url为基础构建HttpURLConnection的实例
+        Log.d(TAG, "debug3 url:" + url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        StringBuilder response = null;
+        StringBuilder response = new StringBuilder();
         BufferedReader reader = null;
         try {
             // step2: 设置http方法或其它参数
@@ -130,6 +147,7 @@ public final class NetworkUtils {
         Request request = new Request.Builder().url(address).build();
         client.newCall(request).enqueue(callback);
     }
+
 
 //    /**
 //     * 根据weatherId获取天气数据

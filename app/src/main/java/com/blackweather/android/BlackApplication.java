@@ -6,7 +6,8 @@ import android.content.Context;
 import org.litepal.LitePal;
 
 /**
- * 自定义Application类，方便获取全局context和初始化LitePal
+ * Author: theVan
+ * 自定义Application类，方便获取全局context并且初始化LitePal
  */
 public class BlackApplication extends Application {
 

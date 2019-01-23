@@ -17,7 +17,8 @@
             android:id="@+id/home_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false" />
+            android:clipToPadding="false"
+            android:background="@drawable/selector_item_home"/>
 
         <ProgressBar
             android:id="@+id/home_loading_indicator"

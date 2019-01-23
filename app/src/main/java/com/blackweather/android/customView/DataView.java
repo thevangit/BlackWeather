@@ -6,7 +6,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.animation.DecelerateInterpolator;
 
 import com.blackweather.android.R;
@@ -68,6 +67,5 @@ public class DataView extends AppCompatTextView {
             return mUnit;
         }
     }
-
 
 }

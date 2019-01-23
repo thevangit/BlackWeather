@@ -8,12 +8,29 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="title_text_style">
+        <item name="android:textSize">@dimen/title_text_size</item>
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
     <style name="hint_text_style">
         <item name="android:fontFamily">serif</item>
         <item name="android:textColor">@color/primary_text</item>
         <item name="android:textSize">@dimen/list_item_text_size_small_small_small</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="title_png_style">
+        <item name="android:layout_width">@dimen/title_png_size</item>
+        <item name="android:layout_height">@dimen/title_png_size</item>
+    </style>
+
+    <style name="title_logo_style">
+        <item name="android:layout_width">@dimen/title_logo_width</item>
+        <item name="android:layout_height">@dimen/title_logo_height</item>
     </style>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.blackweather.android;
+package com.blackweather.android.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blackweather.android.BlackApplication;
+import com.blackweather.android.R;
 import com.blackweather.android.customView.BarView;
 import com.blackweather.android.customView.CircleView;
 import com.blackweather.android.customView.DataView;
@@ -18,7 +20,7 @@ import com.blackweather.android.utilities.PreferenceUtils;
 /**
  * 定义RecyclerView的adapter
  */
-public class ABlackRecycleHomeAdapter extends RecyclerView.Adapter<ABlackRecycleHomeAdapter.BlackHolder> {
+public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapter.BlackHolder> {
 
     // 不同的item view的常量
     private static final int VIEW_TYPE_TODAY = 0;
@@ -28,8 +30,15 @@ public class ABlackRecycleHomeAdapter extends RecyclerView.Adapter<ABlackRecycle
 
     private Weather mWeather;
 
-    public ABlackRecycleHomeAdapter() {
+    private final OnItemClickListener mListener;
+
+    public interface OnItemClickListener{
+        void onItemClickListener(int position);
+    }
+
+    public MainRecyclerAdapter(OnItemClickListener listener) {
         super();
+        mListener = listener;
     }
 
     public void setData(Weather weather) {
@@ -83,6 +92,14 @@ public class ABlackRecycleHomeAdapter extends RecyclerView.Adapter<ABlackRecycle
             uvDataView = itemView.findViewById(R.id.uv_data);
             highDataView = itemView.findViewById(R.id.high_temperature_data);
             lowDataView = itemView.findViewById(R.id.low_temperature_data);
+
+            // 给ItemView设置监听
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onItemClickListener(getAdapterPosition());
+                }
+            });
         }
     }
 
@@ -91,10 +108,10 @@ public class ABlackRecycleHomeAdapter extends RecyclerView.Adapter<ABlackRecycle
         int layoutId;
         switch (viewType) {
             case VIEW_TYPE_TODAY:
-                layoutId = R.layout.fragment_today_item;
+                layoutId = R.layout.item_home_first;
                 break;
             case VIEW_TYPE_FUTURE:
-                layoutId = R.layout.fragment_list_item;
+                layoutId = R.layout.item_home;
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -134,7 +151,7 @@ public class ABlackRecycleHomeAdapter extends RecyclerView.Adapter<ABlackRecycle
                 blackHolder.precipDataView.setData(Float.parseFloat(forecast.precip),
                         "%");
                 blackHolder.iconImageView.setImageResource(BlackUtils.
-                        getIconResInDay(Integer.parseInt(forecast.codeDay)));
+                        getIcoResWithCode(Integer.parseInt(forecast.codeDay)));
                 blackHolder.windBarView.setData(windScaleF, 15);
                 blackHolder.windDataView.setData(windScaleF, null);
                 blackHolder.uvBarView.setData(Float.parseFloat(forecast.uv), 15);
@@ -148,7 +165,7 @@ public class ABlackRecycleHomeAdapter extends RecyclerView.Adapter<ABlackRecycle
                 blackHolder.minTempTextView.setText(String.
                         valueOf(Math.round(lowTempf)) + "\u00b0");
                 blackHolder.iconImageView.setImageResource(BlackUtils.
-                        getIconResInDay(Integer.parseInt(forecast.codeDay)));
+                        getIcoResWithCode(Integer.parseInt(forecast.codeDay)));
                 break;
             default:
                 throw new IllegalArgumentException();

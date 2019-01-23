@@ -1,4 +1,4 @@
-package com.blackweather.android;
+package com.blackweather.android.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -6,11 +6,13 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 
+import com.blackweather.android.HomeFragment;
+
 import java.util.List;
 
-public class ABlackViewPagerAdapter extends FragmentStatePagerAdapter {
+public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    private List<FBlackHomeFragment> mFragments;
+    private List<HomeFragment> mFragments;
 
     private int mPosition;
 
@@ -20,7 +22,7 @@ public class ABlackViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private FragmentManager mFm;
 
-    public ABlackViewPagerAdapter(FragmentManager fm, List<FBlackHomeFragment> fragments) {
+    public ViewPagerAdapter(FragmentManager fm, List<HomeFragment> fragments) {
         super(fm);
         mFm = fm;
         mFragments = fragments;

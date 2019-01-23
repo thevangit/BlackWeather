@@ -56,7 +56,6 @@ public class AutoUpdateService extends Service {
         // 取出保存的本地信息
         List<String> savedWeatherIdsList = PreferenceUtils.fetchPagesWeatherId(this,
                 PreferenceUtils.PAGES_WEATHER_ID_KEY);
-        int count = savedWeatherIdsList.size();
         if (savedWeatherIdsList.size() > 0) {
             // 如果缓存的城市就更新天气信息
             for (final String savedWeatherId : savedWeatherIdsList) {

@@ -2,7 +2,6 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:attrs="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,7 +11,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/bc_pic_img"
+            android:id="@+id/home_pic_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
@@ -22,33 +21,33 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <include layout="@layout/title" />
+            <include layout="@layout/title_home" />
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <android.support.v4.view.ViewPager
-                    android:id="@+id/blackActivity_view_pager"
+                    android:id="@+id/home_view_pager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/backActivity_fab_button"
+                    android:id="@+id/home_fab_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"
-                    android:layout_margin="16dp"
+                    android:layout_margin="@dimen/margin_to_border_16dp"
                     android:background="@color/trans_parent_black"
                     android:src="@drawable/ic_plus_2"
-                    app:elevation="8dp" />
+                    app:elevation="@dimen/elevation_8dp" />
 
                 <com.rd.PageIndicatorView
-                    android:id="@+id/backActivity_page_indicator"
+                    android:id="@+id/home_page_indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|bottom"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="@dimen/margin_to_border_16dp"
                     app:piv_animationType="worm"
                     app:piv_dynamicCount="true"
                     app:piv_interactiveAnimation="true"
@@ -56,25 +55,24 @@
                     app:piv_radius="4dp"
                     app:piv_selectedColor="@color/primary_text"
                     app:piv_unselectedColor="@color/secondary_text"
-                    app:piv_viewPager="@id/blackActivity_view_pager" />
+                    app:piv_viewPager="@id/home_view_pager" />
 
             </FrameLayout>
-
-            <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 
         </LinearLayout>
 
         <FrameLayout
-            android:id="@+id/start_frame_layout"
+            android:id="@+id/home_start_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start" />
 
         <FrameLayout
-            android:id="@+id/end_frame_layout"
+            android:id="@+id/home_end_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="end" />
 
     </android.support.v4.widget.DrawerLayout>
+
 </FrameLayout>

@@ -1,6 +1,6 @@
 package com.blackweather.android;
 
-import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.blackweather.android.adapters.MainRecyclerAdapter;
 import com.blackweather.android.gson.Weather;
 import com.blackweather.android.utilities.JsonUtils;
 import com.blackweather.android.utilities.NetworkUtils;
@@ -29,15 +30,17 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class FBlackHomeFragment extends Fragment implements Serializable,
-        SharedPreferences.OnSharedPreferenceChangeListener{
+public class HomeFragment extends Fragment implements Serializable,
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        MainRecyclerAdapter.OnItemClickListener{
 
-    private static final String TAG = FBlackHomeFragment.class.getSimpleName();
+    private static final String TAG = HomeFragment.class.getSimpleName();
     public static final String BUNDLE_WEATHER_ID_KEY = "bundle_weather_id";
 
     private String mWeatherId;
     private RecyclerView mHomeRecyclerView;
-    private ABlackRecycleHomeAdapter mAdapter = new ABlackRecycleHomeAdapter();
+    private MainRecyclerAdapter mAdapter = new
+            MainRecyclerAdapter(this);
     private SwipeRefreshLayout mRefreshLayout;
 
     /**
@@ -46,8 +49,8 @@ public class FBlackHomeFragment extends Fragment implements Serializable,
      * @param dataStr 字符串数据
      * @return 返回实例
      */
-    public static FBlackHomeFragment newInstance(String dataStr) {
-        FBlackHomeFragment blackHomeFragment = new FBlackHomeFragment();
+    public static HomeFragment newInstance(String dataStr) {
+        HomeFragment blackHomeFragment = new HomeFragment();
         Bundle args = new Bundle();
         args.putString(BUNDLE_WEATHER_ID_KEY, dataStr);
         blackHomeFragment.setArguments(args);
@@ -72,16 +75,6 @@ public class FBlackHomeFragment extends Fragment implements Serializable,
                 .registerOnSharedPreferenceChangeListener(this);
         Log.d(TAG, "debug onCreate: bundlweatherid: " + args.getString(BUNDLE_WEATHER_ID_KEY));
     }
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        Bundle args = getArguments();
-//        if (args != null) {
-//            mWeatherId = args.getString(BUNDLE_WEATHER_ID_KEY);
-//        }
-//        Log.d(TAG, "onAttach: 执行" );
-//    }
 
     @Nullable
     @Override
@@ -131,24 +124,6 @@ public class FBlackHomeFragment extends Fragment implements Serializable,
 
         return view;
     }
-//        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                requestWeather(mWeatherId);
-//            }
-//        });
-//        mNavButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mDrawerLayout.openDrawer(GravityCompat.START);
-//            }
-//        });
-//        String bcPic = prefs.getString("bc_pic", null);
-//        if (bcPic != null) {
-//            Glide.with(this).load(bcPic).into(mBcPicImg);
-//        } else {
-//            loadBingPic();
-//        }
 
     /**
      * 根据天气id请求城市天气数据
@@ -157,7 +132,6 @@ public class FBlackHomeFragment extends Fragment implements Serializable,
         if (weatherId == null) {
             Toast.makeText(getActivity(), "weatherId为空",
                     Toast.LENGTH_SHORT).show();
-//            getActivity().sendWeatherId(String newWeatherId);
             return;
         }
         URL url = NetworkUtils.buildUrlWithWeatherId(weatherId);
@@ -168,7 +142,7 @@ public class FBlackHomeFragment extends Fragment implements Serializable,
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), "获取天气信息失败1",
+                        Toast.makeText(BlackApplication.getContext(), "获取天气信息失败1",
                                 Toast.LENGTH_SHORT).show();
                         mRefreshLayout.setRefreshing(false);
                     }
@@ -178,9 +152,9 @@ public class FBlackHomeFragment extends Fragment implements Serializable,
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.body() == null) {
-                    Toast.makeText(getActivity(), "response错误", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BlackApplication.getContext(), "response错误", Toast.LENGTH_SHORT).show();
                     return;
-                };
+                }
                 final String responseStr = response.body().string();
                 final Weather weather = JsonUtils.handleWeatherResponse(responseStr);
                 if (getActivity() == null) {return;}
@@ -195,7 +169,7 @@ public class FBlackHomeFragment extends Fragment implements Serializable,
                             editor.apply();
                             mAdapter.setData(weather);
                         } else {
-                            Toast.makeText(getActivity(), "获取天气信息失败3",
+                            Toast.makeText(BlackApplication.getContext(), "获取天气信息失败3",
                                     Toast.LENGTH_SHORT).show();
                         }
                         mRefreshLayout.setRefreshing(false);
@@ -213,37 +187,18 @@ public class FBlackHomeFragment extends Fragment implements Serializable,
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(TAG, "settings onSharedPreferenceChanged: 执行");
         mAdapter.notifyDataSetChanged();
-//        if (key.equals(getString(R.string.pref_units_key))) {
-//            try {
-//                requestWeather(mWeatherId);
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
-//    @Override
-//    public void onUnitChange() {
-//        try {
-//            requestWeather(mWeatherId);
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-    //    /**
-//     * 加载背景图片
-//     */
-//    private void loadBingPic() {
-//        Glide.with(this).load(R.drawable.bg_1).into(mBcPicImg);
-//    }
-//
-//    public DrawerLayout getDrawerLayout() {
-//        return mDrawerLayout;
-//    }
-//
-//    public SwipeRefreshLayout getSwipeRefresh() {
-//        return mSwipeRefresh;
-//    }
+    /**
+     * 实现点击recycler view中的item时的响应
+     * @param position
+     */
+    @Override
+    public void onItemClickListener(int position) {
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
+        intent.putExtra("weatherId_key", mWeatherId);
+        intent.putExtra("day_num_key", position);
+        startActivity(intent);
+    }
 
 }

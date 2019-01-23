@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.blackweather.android.litePalDatabase.City;
-import com.blackweather.android.litePalDatabase.County;
-import com.blackweather.android.litePalDatabase.Province;
+import com.blackweather.android.data.City;
+import com.blackweather.android.data.County;
+import com.blackweather.android.data.Province;
 import com.blackweather.android.gson.Weather;
 import com.google.gson.Gson;
 
