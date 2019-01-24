@@ -8,61 +8,62 @@
 
     <include layout="@layout/title_choose" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/choose_refresh"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <FrameLayout
+            <!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:id="@+id/choose_choose_location"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?android:attr/listPreferredItemHeight"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"-->
+            <!--android:text="定位到当前城市  >"-->
+            <!--android:textAppearance="?android:attr/textAppearanceListItem"-->
+            <!--android:visibility="visible" />-->
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/choose_current_location"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:gravity="center_vertical"
+                android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
+                android:text="当前城市:"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:visibility="gone" />
 
-                <!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"-->
-                <!--android:id="@+id/choose_choose_location"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="?android:attr/listPreferredItemHeight"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"-->
-                <!--android:text="定位到当前城市  >"-->
-                <!--android:textAppearance="?android:attr/textAppearanceListItem"-->
-                <!--android:visibility="visible" />-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="@color/divide_line" />
 
-                <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/choose_current_location"
-                    android:layout_width="match_parent"
-                    android:layout_height="?android:attr/listPreferredItemHeight"
-                    android:gravity="center_vertical"
-                    android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
-                    android:text="当前城市:"
-                    android:textAppearance="?android:attr/textAppearanceListItem"
-                    android:visibility="gone" />
+        </FrameLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_gravity="bottom"
-                    android:background="@color/divide_line" />
-
-            </FrameLayout>
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/choose_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <ListView
                 android:id="@+id/list_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
 
-        </LinearLayout>
+    </LinearLayout>
 
-        <ProgressBar
-            android:id="@+id/choose_progress"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center" />
+    <ProgressBar
+        android:id="@+id/choose_progress"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>
