@@ -2,6 +2,7 @@ package com.blackweather.android;
 
 import android.app.Application;
 import android.content.Context;
+import android.widget.Toast;
 
 import org.litepal.LitePal;
 

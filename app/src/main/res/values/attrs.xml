@@ -11,8 +11,7 @@
     </declare-styleable>
 
     <declare-styleable name="DataView">
-        <attr name="isRound" format="boolean">
-        </attr>
+        <attr name="isRound" format="boolean" />
     </declare-styleable>
 
 </resources>

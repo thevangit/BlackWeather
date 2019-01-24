@@ -20,6 +20,7 @@ import com.blackweather.android.adapters.MainRecyclerAdapter;
 import com.blackweather.android.gson.Weather;
 import com.blackweather.android.utilities.JsonUtils;
 import com.blackweather.android.utilities.NetworkUtils;
+import com.blackweather.android.utilities.ToastUtils;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -80,10 +81,7 @@ public class HomeFragment extends Fragment implements Serializable,
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        Bundle args = getArguments();
-//        if (args != null) {
-//            mWeatherId = args.getString(BUNDLE_WEATHER_ID_KEY);
-//        }
+
         Log.d(TAG, "debug onCreateView: 执行");
         
         View view = inflater.inflate(R.layout.fragment_page, container, false);
@@ -130,8 +128,10 @@ public class HomeFragment extends Fragment implements Serializable,
      */
     private void requestWeather(final String weatherId) throws MalformedURLException {
         if (weatherId == null) {
-            Toast.makeText(getActivity(), "weatherId为空",
-                    Toast.LENGTH_SHORT).show();
+            ToastUtils.getInstance(BlackApplication.getContext())
+                    .show("获取天气信息失败 error:201");
+//            Toast.makeText(getActivity(), "获取天气信息失败h101",
+//                    Toast.LENGTH_SHORT).show();
             return;
         }
         URL url = NetworkUtils.buildUrlWithWeatherId(weatherId);
@@ -142,8 +142,10 @@ public class HomeFragment extends Fragment implements Serializable,
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(BlackApplication.getContext(), "获取天气信息失败1",
-                                Toast.LENGTH_SHORT).show();
+                        ToastUtils.getInstance(BlackApplication.getContext())
+                                .show("获取天气信息失败 error:202");
+//                        Toast.makeText(BlackApplication.getContext(), "获取天气信息失败h102",
+//                                Toast.LENGTH_SHORT).show();
                         mRefreshLayout.setRefreshing(false);
                     }
                 });
@@ -152,7 +154,9 @@ public class HomeFragment extends Fragment implements Serializable,
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.body() == null) {
-                    Toast.makeText(BlackApplication.getContext(), "response错误", Toast.LENGTH_SHORT).show();
+                    ToastUtils.getInstance(BlackApplication.getContext())
+                            .show("获取天气信息失败 error:203");
+//                    Toast.makeText(BlackApplication.getContext(), "获取天气信息失败h201", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 final String responseStr = response.body().string();
@@ -169,8 +173,8 @@ public class HomeFragment extends Fragment implements Serializable,
                             editor.apply();
                             mAdapter.setData(weather);
                         } else {
-                            Toast.makeText(BlackApplication.getContext(), "获取天气信息失败3",
-                                    Toast.LENGTH_SHORT).show();
+                            ToastUtils.getInstance(BlackApplication.getContext())
+                                    .show("获取天气信息失败 error:204");
                         }
                         mRefreshLayout.setRefreshing(false);
                     }

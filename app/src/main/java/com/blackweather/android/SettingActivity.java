@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blackweather.android.utilities.ToastUtils;
+
 public class SettingActivity extends AppCompatActivity {
 
     private Button mBackButton;
@@ -33,8 +35,10 @@ public class SettingActivity extends AppCompatActivity {
                 if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
                 } else {
-                    Toast.makeText(SettingActivity.this,
-                            "没有安装浏览器", Toast.LENGTH_SHORT).show();
+                    ToastUtils.getInstance(BlackApplication.getContext())
+                            .show("没有发现浏览器");
+//                    Toast.makeText(SettingActivity.this,
+//                            "没有安装浏览器", Toast.LENGTH_SHORT).show();
                 }
             }
         });

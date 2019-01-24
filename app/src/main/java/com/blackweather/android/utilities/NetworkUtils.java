@@ -98,7 +98,7 @@ public final class NetworkUtils {
      * @return 存储json格式文本的字符串
      * @throws IOException
      */
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
+    public static String sendRequestWithHttpConnection(URL url) throws IOException {
         // step1：以url为基础构建HttpURLConnection的实例
         Log.d(TAG, "debug3 url:" + url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

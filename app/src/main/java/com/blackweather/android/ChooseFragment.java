@@ -1,8 +1,12 @@
 package com.blackweather.android;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,20 +26,20 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.blackweather.android.data.City;
 import com.blackweather.android.data.County;
 import com.blackweather.android.data.Province;
+import com.blackweather.android.gson.Weather;
 import com.blackweather.android.utilities.JsonUtils;
 import com.blackweather.android.utilities.NetworkUtils;
+import com.blackweather.android.utilities.ToastUtils;
 
 import org.litepal.LitePal;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +48,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class ChooseFragment extends Fragment {
+public class ChooseFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<String[]> {
 
 
     private static final String TAG = ChooseFragment.class.getSimpleName();
@@ -56,13 +62,13 @@ public class ChooseFragment extends Fragment {
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
     public static final int LEVEL_COUNTY = 2;
-    // TODO(1) 将ProgressDialog更改为ProgressBar
-    // 进度对话框，在API26中ProgressDialog被声明不赞成使用，应使用的替代方法是ProgressBar
-//    private ProgressDialog mProgressDialog;
-    private ProgressBar mProgressBar;
+
+    //    private ProgressDialog mProgressDialog;
+//    private ProgressBar mProgressBar;
     private TextView mTitleText;
     private Button mBackButton;
     private ListView mListView;
+
 
     private ArrayAdapter<String> mAdapter;
     private List<String> mDataList = new ArrayList<>();
@@ -88,8 +94,12 @@ public class ChooseFragment extends Fragment {
     private String mCurrentWeatherId;
     private String mCurrentLocation;
     private TextView mCurrentLocationView;
-    private ProgressBar mCurrentProgressBar;
+    private ProgressBar mProgressBar;
 //    private TextView mCurrentChooseView;
+
+    private SwipeRefreshLayout mRefreshLayout;
+
+    private Location mLocation;
 
     public static ChooseFragment newInstance(int stateData) {
         ChooseFragment bhf = new ChooseFragment();
@@ -111,6 +121,9 @@ public class ChooseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
+
+        Log.d(TAG, "debug4 onCreateView: " + "得到执行");
+
         View view = inflater.inflate(R.layout.fragment_choose, container, false);
         mTitleText = view.findViewById(R.id.title_choose_text);
         mBackButton = view.findViewById(R.id.title_choose_back_button);
@@ -120,100 +133,65 @@ public class ChooseFragment extends Fragment {
                 mDataList);
         mListView.setAdapter(mAdapter);
         mCurrentLocationView = view.findViewById(R.id.choose_current_location);
-        mCurrentProgressBar = view.findViewById(R.id.choose_current_progress);
-//        mCurrentChooseView = view.findViewById(R.id.choose_choose_location);
-//        mCurrentProgressBar.setVisibility(View.GONE);
+        mProgressBar = view.findViewById(R.id.choose_progress);
+        mRefreshLayout = view.findViewById(R.id.choose_refresh);
+        mProgressBar.setVisibility(View.GONE);
         mCurrentLocationView.setVisibility(View.GONE);
-
-        mLocationClient = new LocationClient(BlackApplication.getContext());
-        mLocationClient.registerLocationListener(new BDLocationListener() {
-            @Override
-            public void onReceiveLocation(BDLocation bdLocation) {
-                final double longitude = bdLocation.getLongitude();
-                final double latitude = bdLocation.getLatitude();
-                getActivity().getSupportLoaderManager().initLoader(1, null,
-                        new LoaderManager.LoaderCallbacks<String[]>() {
-                            @NonNull
-                            @Override
-                            public Loader<String[]> onCreateLoader(int i, @Nullable Bundle bundle) {
-                                URL url = null;
-                                try {
-                                    url = NetworkUtils.buildUrlWithLonngtitdeLatitude(longitude, latitude);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                return new LocationLoader(getActivity(), url);
-                            }
-
-                            @Override
-                            public void onLoadFinished(@NonNull Loader<String[]> loader, String[] strings) {
-                                if (strings == null) {
-//                                    Toast.makeText(getActivity(), "未知错误",
-//                                            Toast.LENGTH_SHORT).show();
-//                                    mCurrentProgressBar.setVisibility(View.GONE);
-//                                    mCurrentLocationView.setVisibility(View.GONE);
-//                                    mCurrentChooseView.setVisibility(View.VISIBLE);
-                                    return;
-                                }
-                                mCurrentLocation = strings[0];
-                                mCurrentWeatherId = strings[1];
-                                mCurrentLocationView.setText("当前城市：" + mCurrentLocation);
-//                                mCurrentProgressBar.setVisibility(View.GONE);
-//                                mCurrentChooseView.setVisibility(View.GONE);
-                                mCurrentLocationView.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            public void onLoaderReset(@NonNull Loader<String[]> loader) {
-                            }
-                        });
-            }
-        });
-
         // 处理运行时权限
+        List<String> permissionList = checkPermissionList();
+        if (!permissionList.isEmpty()) {
+            String[] permissions = permissionList
+                    .toArray(new String[permissionList.size()]);
+            ActivityCompat.requestPermissions(getActivity(), permissions, 1);
+        } else {
+            fetchLongAndLat();
+        }
+
+//        getActivity().getSupportLoaderManager().initLoader(1, null,
+//                this);
+        return view;
+    }
+
+    private List<String> checkPermissionList() {
         List<String> permissionList = new ArrayList<>();
         if (ContextCompat.checkSelfPermission(BlackApplication.getContext(), Manifest.permission
                 .ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
         }
         if (ContextCompat.checkSelfPermission(BlackApplication.getContext(), Manifest.permission
-                .READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            permissionList.add(Manifest.permission.READ_PHONE_STATE);
+                .ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         }
-        if (ContextCompat.checkSelfPermission(BlackApplication.getContext(), Manifest.permission
-                .WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (!permissionList.isEmpty()) {
-            String[] permissions = permissionList
-                    .toArray(new String[permissionList.size()]);
-            ActivityCompat.requestPermissions(getActivity(), permissions, 1);
-        } else {
-            requestLocation();
-        }
-
-        return view;
+//        if (ContextCompat.checkSelfPermission(BlackApplication.getContext(), Manifest.permission
+//                .READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+//            permissionList.add(Manifest.permission.READ_PHONE_STATE);
+//        }
+//        if (ContextCompat.checkSelfPermission(BlackApplication.getContext(), Manifest.permission
+//                .WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//        }
+        return permissionList;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1:
                 if (grantResults.length > 0) {
                     for (int result : grantResults) {
                         if (result != PackageManager.PERMISSION_GRANTED) {
-                            Toast.makeText(getActivity(), "需要同意所有全选才能运行",
-                                    Toast.LENGTH_SHORT).show();
+                            ToastUtils.getInstance(BlackApplication.getContext())
+                                    .show("需要同意所有权限才能运行 error:101");
                             getActivity().finish();
                             return;
                         }
                     }
-                    requestLocation();
+                    fetchLongAndLat();
+//                    requestLocation();
                 } else {
-                    Toast.makeText(getActivity(), "发生未知错误", Toast.LENGTH_SHORT)
-                            .show();
+                    ToastUtils.getInstance(BlackApplication.getContext())
+                            .show("需要同意所有权限才能运行 error:102");
                     getActivity().finish();
                 }
                 break;
@@ -221,27 +199,81 @@ public class ChooseFragment extends Fragment {
         }
     }
 
-
-    private void requestLocation() {
-//        Log.d(TAG, "debug3 requestLocation: " + "执行");
-        mLocationClient.start();
+    /**
+     * 获取经纬度
+     */
+    private void fetchLongAndLat() {
+        mLocation = queryLocation();
+        if (mLocation != null) {
+            mLongitude = mLocation.getLongitude();
+            mLatitude = mLocation.getLatitude();
+            Log.d(TAG, "debug4 onCreateView: " + mLongitude + "," + mLatitude);
+        }
     }
+
+    public Location queryLocation() {
+        LocationManager lm = (LocationManager) getActivity()
+                .getSystemService(Context.LOCATION_SERVICE);
+        String provider = judgeProvider(lm);
+        if (provider != null) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission
+                    .ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission
+                    .ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return null;
+            }
+            Log.d(TAG, "debug4 queryLocation: " + lm.getLastKnownLocation(provider).toString());
+            return lm.getLastKnownLocation(provider);
+        } else {
+            ToastUtils.getInstance(BlackApplication.getContext()).show("error: 103");
+            return null;
+        }
+    }
+
+    private String judgeProvider(LocationManager lm) {
+        List<String> providerList = lm.getProviders(true);
+        if (providerList.contains(LocationManager.NETWORK_PROVIDER)) {
+            return LocationManager.NETWORK_PROVIDER;
+        } else if (providerList.contains(LocationManager.GPS_PROVIDER)) {
+            return LocationManager.GPS_PROVIDER;
+        } else {
+            ToastUtils.getInstance(BlackApplication.getContext())
+                    .show("需要同意所有权限才能运行 error:104");
+//            Toast.makeText(getActivity(), "存在未同意的权限", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
+    private void showCurrentLocation() {
+        try {
+            if (mLatitude != 0 && mLongitude != 0) {
+                URL url = NetworkUtils.buildUrlWithLonngtitdeLatitude(mLongitude, mLatitude);
+                new LocationTask().execute(url);
+            } else {
+                mRefreshLayout.setRefreshing(false);
+//                ToastUtils.getInstance(BlackApplication.getContext())
+//                        .show("获取位置信息失败 error:107（缺少权限）");
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // 处理定位
+        Log.d(TAG, "debug4 onActivityCreated: " + " 得到执行");
+        showCurrentLocation();
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                showCurrentLocation();
+            }
+        });
 
-//        mCurrentChooseView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mCurrentChooseView.setVisibility(View.GONE);
-//                mCurrentProgressBar.setVisibility(View.VISIBLE);
-//                requestLocation();
-//            }
-//        });
-
+        // 定位到的location
         mCurrentLocationView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -262,8 +294,6 @@ public class ChooseFragment extends Fragment {
                 }
             }
         });
-
-
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -307,6 +337,7 @@ public class ChooseFragment extends Fragment {
 
         queryProvinces();
     }
+
 
     /**
      * 查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询
@@ -387,7 +418,9 @@ public class ChooseFragment extends Fragment {
      */
     private void queryFormServer(String address, final String type) {
         Log.i("MainActivity", "queryFormServer:执行 ");
-//        showProgressDialog();
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        //        showProgressDialog();
         NetworkUtils.sendOkHttpRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -395,8 +428,11 @@ public class ChooseFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        ToastUtils.getInstance(BlackApplication.getContext())
+                                .show("加载信息失败 error:105");
+                        mProgressBar.setVisibility(View.GONE);
 //                        closeProgressDialog();
-                        Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -419,7 +455,7 @@ public class ChooseFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            closeProgressDialog();
+                            mProgressBar.setVisibility(View.GONE);
                             if ("province".equals(type)) {
                                 queryProvinces();
                             } else if ("city".equals(type)) {
@@ -434,21 +470,105 @@ public class ChooseFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mLocationClient.stop();
+    class LocationTask extends AsyncTask<URL, Boolean, String[]> {
 
+        @Override
+        protected String[] doInBackground(URL... urls) {
+            if (urls != null) {
+                try {
+                    final String[] strings = new String[2];
+                    String weatherStr;
+                    weatherStr = NetworkUtils.sendRequestWithHttpConnection(urls[0]);
+                    Weather weather = JsonUtils.handleWeatherResponse(weatherStr);
+                    if (weather != null && "ok".equals(weather.status)) {
+                        strings[0] = weather.basic.location;
+                        strings[1] = weather.basic.weatherId;
+                        publishProgress(false);
+                        return strings;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    publishProgress(false);
+                    return null;
+                }
+            }
+            publishProgress(false);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String[] strings) {
+            if (strings != null) {
+                super.onPostExecute(strings);
+                mCurrentLocation = strings[0];
+                mCurrentWeatherId = strings[1];
+                mCurrentLocationView.setText("当前位置：" + mCurrentLocation);
+                mCurrentLocationView.setVisibility(View.VISIBLE);
+            } else {
+                mRefreshLayout.setRefreshing(false);
+                ToastUtils.getInstance(BlackApplication.getContext())
+                        .show("获取当前位置失败 error:106");
+//
+//                Toast.makeText(getActivity(), "获取当前位置失败", Toast.LENGTH_SHORT)
+//                        .show();
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Boolean... values) {
+            super.onProgressUpdate(values);
+            mRefreshLayout.setRefreshing(values[0]);
+        }
     }
 
-    //    @Override
+    /* - - - - - - - - - - - - - - - - - - */
+    /* - - - Loader callback methods - - - */
+    /* - - - - - - - - - - - - - - - - - - */
+
+    @NonNull
+    @Override
+    public Loader<String[]> onCreateLoader(int i, @Nullable Bundle bundle) {
+        URL url = null;
+        try {
+            url = NetworkUtils.buildUrlWithLonngtitdeLatitude(mLongitude, mLatitude);
+            Log.d(TAG, "debug4 onCreateLoader: " + url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new LocationLoader(getActivity(), url);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<String[]> loader, String[] strings) {
+        if (strings == null) {
+            return;
+        }
+        mCurrentLocation = strings[0];
+        mCurrentWeatherId = strings[1];
+        mCurrentLocationView.setText("当前城市：" + mCurrentLocation);
+        mCurrentLocationView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader loader) {
+        fetchLongAndLat();
+    }
+}
+
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        mLocationClient.stop();
+//    }
+
+//    @Override
 //    public void onPause() {
 //        super.onPause();
 //        mLocationClient.stop();
 //        mLocationClient.unRegisterLocationListener(new BlackLocationListener());
 //    }
 
-    //    /**
+//    /**
 //     * Show ProgressDialog
 //     */
 //    private void showProgressDialog() {
@@ -493,7 +613,7 @@ public class ChooseFragment extends Fragment {
 //    public void onLoaderReset(@NonNull Loader<String[]> loader) {
 //
 //    }
-}
+//}
 
 //        ///////////////////////
 //        mLocationClient = new LocationClient(BlackApplication.getContext());
@@ -590,5 +710,56 @@ public class ChooseFragment extends Fragment {
 //        }
 //    }
 
+//
+//    private void requestLocation() {
+////        Log.d(TAG, "debug3 requestLocation: " + "执行");
+//        mLocationClient.start();
+//    }
+
+
+//        mLocationClient = new LocationClient(BlackApplication.getContext());
+//        mLocationClient.registerLocationListener(new BDLocationListener() {
+//            @Override
+//            public void onReceiveLocation(BDLocation bdLocation) {
+//                final double longitude = bdLocation.getLongitude();
+//                final double latitude = bdLocation.getLatitude();
+//                getActivity().getSupportLoaderManager().initLoader(1, null,
+//                        new LoaderManager.LoaderCallbacks<String[]>() {
+//                            @NonNull
+//                            @Override
+//                            public Loader<String[]> onCreateLoader(int i, @Nullable Bundle bundle) {
+//                                URL url = null;
+//                                try {
+//                                    url = NetworkUtils.buildUrlWithLonngtitdeLatitude(longitude, latitude);
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
+//                                return new LocationLoader(getActivity(), url);
+//                            }
+//
+//                            @Override
+//                            public void onLoadFinished(@NonNull Loader<String[]> loader, String[] strings) {
+//                                if (strings == null) {
+////                                    Toast.makeText(getActivity(), "未知错误",
+////                                            Toast.LENGTH_SHORT).show();
+////                                    mProgressBar.setVisibility(View.GONE);
+////                                    mCurrentLocationView.setVisibility(View.GONE);
+////                                    mCurrentChooseView.setVisibility(View.VISIBLE);
+//                                    return;
+//                                }
+//                                mCurrentLocation = strings[0];
+//                                mCurrentWeatherId = strings[1];
+//                                mCurrentLocationView.setText("当前城市：" + mCurrentLocation);
+////                                mProgressBar.setVisibility(View.GONE);
+////                                mCurrentChooseView.setVisibility(View.GONE);
+//                                mCurrentLocationView.setVisibility(View.VISIBLE);
+//                            }
+//
+//                            @Override
+//                            public void onLoaderReset(@NonNull Loader<String[]> loader) {
+//                            }
+//                        });
+//            }
+//        });
 
 /////////////////////////////

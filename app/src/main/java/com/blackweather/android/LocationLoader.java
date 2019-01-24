@@ -6,16 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LLSInterface;
-import com.baidu.location.LocationClient;
 import com.blackweather.android.gson.Weather;
 import com.blackweather.android.utilities.JsonUtils;
 import com.blackweather.android.utilities.NetworkUtils;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class LocationLoader extends AsyncTaskLoader<String[]> {
@@ -33,23 +28,23 @@ public class LocationLoader extends AsyncTaskLoader<String[]> {
 
     @Override
     public String[] loadInBackground() {
-        Log.d(TAG, "debug3 loadInBackground: " + "得到执行");
-        Log.d(TAG, "debug3 url: " + mURL);
+        Log.d(TAG, "debug4 loadInBackground: " + "得到执行");
+        Log.d(TAG, "debug4 url: " + mURL);
 
         final String[] strings = new String[2];
-        String weatherStr = null;
-
+        String weatherStr;
         try {
-            weatherStr = NetworkUtils.getResponseFromHttpUrl(mURL);
+            weatherStr = NetworkUtils.sendRequestWithHttpConnection(mURL);
+            Weather weather = JsonUtils.handleWeatherResponse(weatherStr);
+            if (weather != null && "ok".equals(weather.status)) {
+                strings[0] = weather.basic.location;
+                strings[1] = weather.basic.weatherId;
+                return strings;
+            } else {
+                return null;
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        Weather weather = JsonUtils.handleWeatherResponse(weatherStr);
-        if (weather != null && "ok".equals(weather.status)) {
-            strings[0] = weather.basic.location;
-            strings[1] = weather.basic.weatherId;
-            return strings;
-        } else {
             return null;
         }
     }

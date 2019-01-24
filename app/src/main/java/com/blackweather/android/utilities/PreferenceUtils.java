@@ -2,6 +2,7 @@ package com.blackweather.android.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,6 +134,13 @@ public final class PreferenceUtils {
         String str = sp.getString(context.getString(R.string.pref_units_key),
                 context.getString(R.string.pref_units_metric));
         return (str.equals(context.getString(R.string.pref_units_metric)));
+    }
+
+    public static boolean isAllowedAutpUpdate(Context context){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean bool = sp.getBoolean(context.getString(R.string.pref_auto_update_key),
+                true);
+        return bool;
     }
 
 }

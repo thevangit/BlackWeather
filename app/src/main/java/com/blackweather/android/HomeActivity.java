@@ -20,6 +20,7 @@ import com.blackweather.android.service.AutoUpdateService;
 import com.blackweather.android.task.BlackTask;
 import com.blackweather.android.utilities.NetworkUtils;
 import com.blackweather.android.utilities.PreferenceUtils;
+import com.blackweather.android.utilities.ToastUtils;
 import com.rd.PageIndicatorView;
 
 import java.util.ArrayList;
@@ -203,9 +204,11 @@ public class HomeActivity extends AppCompatActivity {
      * 根据偏好设置来确定是否启动后台自动更新的service
      */
     private void startService() {
-        // 开启后台更新Service
-        Intent intent = new Intent(this, AutoUpdateService.class);
-        startService(intent);
+        if (PreferenceUtils.isAllowedAutpUpdate(this)) {
+            // 开启后台更新Service
+            Intent intent = new Intent(this, AutoUpdateService.class);
+            startService(intent);
+        }
     }
 
     /**
@@ -242,7 +245,9 @@ public class HomeActivity extends AppCompatActivity {
             mFragmentList.add(blackHomeFragment);
             mPagerAdapter.notifyDataSetChanged();
         } else {
-            Toast.makeText(this, "页面数到达上限", Toast.LENGTH_SHORT).show();
+            ToastUtils.getInstance(BlackApplication.getContext())
+                    .show("页面数到达上限");
+//            Toast.makeText(this, "页面数到达上限", Toast.LENGTH_SHORT).show();
         }
         mViewPager.setCurrentItem(mFragmentList.size() - 1);
     }
